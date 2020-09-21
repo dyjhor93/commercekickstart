@@ -1,0 +1,67 @@
+
+
+
+@media only screen and (min-width: 600px) {
+    /* For tablets: */
+}
+
+
+
+@media only screen and (min-width: 768px) {
+    /* For desktop: */
+}
+
+
+
+body {
+    background-color: #f6ebe2;
+}
+
+/* BARRA DE NAVEGACIÓN*/
+
+#zone-menu-wrapper {
+    width: 100%;
+}
+
+#region-menu {
+    background-color: #ffffff;
+}
+
+#main-menu>li>a {
+    background-color: #ffffff;
+    border: none;
+}
+
+#zone-footer-wrapper {
+    background-color: #f6ebe2;
+}
+
+.region-menu-inner > .clearfix:after {
+    content: none;
+    display: block;
+    height: 0;
+    clear: both;
+    visibility: hidden;
+}
+
+/* PARA FOOTER */
+
+#region-footer-second {
+    background: #ffffff;
+}
+
+.content .menu {
+    display: flex;
+}
+
+/* BANER DESCUENTO PRIMERA COMPRA*/
+
+.content>p {
+    text-align: center;
+    background-color: black;
+    color: #ffffff;
+    padding: 0.5rem;
+} 
+
+
+
