@@ -37,7 +37,6 @@ regions[footer_third] = Footer Third
 
 regions[footer2_first] = Footer2 First
 regions[footer2_second] = Footer2 Second
-regions[footer2_third] = Footer2 Third
 
 zones[header] = 'Header'
 zones[content] = 'Content'

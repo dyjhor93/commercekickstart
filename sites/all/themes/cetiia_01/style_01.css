@@ -12,16 +12,12 @@
 }
 
 
-
 body {
-    background-color: #f6ebe2;
+    background-color: none;
 }
 
 /* BARRA DE NAVEGACIÓN*/
 
-#zone-menu-wrapper {
-    width: 100%;
-}
 
 #region-menu {
     background-color: #ffffff;
@@ -36,13 +32,6 @@ body {
     background-color: #f6ebe2;
 }
 
-.region-menu-inner > .clearfix:after {
-    content: none;
-    display: block;
-    height: 0;
-    clear: both;
-}
-
 /* PARA FOOTER */
 
 #region-footer-second {
@@ -54,8 +43,7 @@ body {
 }
 
 /* BANER DESCUENTO PRIMERA COMPRA*/
-
-.content>p {
+#block-block-1 > .block-inner > .content > p {
     text-align: center;
     background-color: black;
     color: #ffffff;
@@ -63,4 +51,37 @@ body {
 } 
 
 
+#zone-footer-wrapper {
+    background: #F3D5CE;
+}
 
+#zone-footer2-wrapper {
+    background: #ffffff;
+}
+
+
+
+/* 
+
+#block-system-main {
+    position: relative;
+}
+
+.field-label-hidden  {
+    text-align: center;
+    width: 50%;
+}
+
+
+.field-label-above {
+    width: 50%;
+}
+
+.content .clearfix {
+    display: flex;
+} 
+ */
+
+.region-menu-inner > .clearfix:after {
+
+}
