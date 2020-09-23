@@ -1,55 +1,75 @@
 
-
-
-@media only screen and (min-width: 600px) {
-    /* For tablets: */
-}
-
-
-
-@media only screen and (min-width: 768px) {
-    /* For desktop: */
-}
-
-
 body {
-    background-color: none;
-}
-
-/* BARRA DE NAVEGACIÓN*/
-
-
-#region-menu {
-    background-color: #ffffff;
-}
-
-#main-menu>li>a {
-    background-color: #ffffff;
-    border: none;
-}
-
-#zone-footer-wrapper {
     background-color: #f6ebe2;
 }
 
-/* PARA FOOTER */
 
-#region-footer-second {
-    background: #ffffff;
+/* *BARRA DE NAVEGACIÓN*/
+
+    /* Logo */
+    #logo{
+        width: 120px;
+        height: auto;
+    }
+
+    /* BARRA NAVEGACION DISEÑO RESPONSIVE */
+    .navigation {
+        background-color: #f6ebe2 !important;
+        text-align: center !important;
+    }
+
+    .toggle-help {
+        display: none;
+    }
+
+    .primary-menu > h2 {
+        display: none;
+    }
+
+#region-menu {
+    background-color: #f6ebe2;
 }
 
-.content .menu {
-    display: flex;
+#main-menu > li > a {
+    background-color: #f6ebe2;
+    border: none;
 }
 
-/* BANER DESCUENTO PRIMERA COMPRA*/
+
+
+/*   *carrito de compras */
+
+.block-shopping-cart-block .content {
+    background-color: #f6ebe2 !important;
+    background-image: url(https://www.flaticon.es/svg/static/icons/svg/1007/1007957.svg) !important;
+}
+
+
+
+/* ZONA USUARIO */
+
+#zone-user-wrapper{
+    background-color: #f6ebe2 ;
+}
+
+.block-menu-user-menu .content ul.menu li a {
+    color: #000 !important ;
+    text-decoration: none !important;
+    font-size: 1rem;
+
+}
+
+
+
+
+/* *BANER DESCUENTO PRIMERA COMPRA*/
+
 #block-block-1 > .block-inner > .content > p {
     text-align: center;
     background-color: black;
     color: #ffffff;
     padding: 0.5rem;
 } 
-
 
 #zone-footer-wrapper {
     background: #F3D5CE;
@@ -61,27 +81,203 @@ body {
 
 
 
-/* 
+/* BLOQUE SLIDER COME SANO VIVE SANO*/
 
-#block-system-main {
-    position: relative;
+    /*  BOTON ABAJO IMAGEN COME SANO VIVE SANO  */
+
+    .views-field-nothing {
+        display: none !important;
+    }
+
+    .bx-controls-direction {
+        display: none !important;
+    } 
+
+    #block-views-demo-content-slideshow-block-1 .bx-wrapper {
+        padding-bottom: 0px !important; 
+    }
+    
+
+.bx-wrapper {
+    height: auto !important;
 }
 
-.field-label-hidden  {
+
+
+/* VISTA PORTAFOLIO */
+
+.field-label-hidden {
+    text-align: center;
+}
+
+
+/* VISTA PRODUCTOS MARKET PLACE  */
+
+.market-place {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+
+.page-products .view-display-products li.views-row {
+    padding: 30px;
+}
+
+
+#block-system-main-market-place {
+    background-color: #ffffff;
+    border-radius: 20px;
+}
+
+
+
+
+/* PRINCIPAL CROUSEL */
+
+
+.jcarrousel-custom{
+    width: 70%;
+    margin: auto;
+    margin-top: 30px;
+}
+
+
+
+
+/*  FOOTER */
+
+#region-footer-second {
+    background: #ffffff;
+}
+
+.content .menu {
+    display: flex;
+}
+
+
+#zone-footer-wrapper {
+    background-color: #f6ebe2;
+}
+
+#block-menu-menu-social-connection .content ul.menu li a.pinterest {
+    background-image: url(https://www.flaticon.es/svg/static/icons/svg/733/733622.svg) !important;
+}
+
+#block-menu-menu-social-connection .content ul.menu li a.facebook {
+    background-image: url(https://www.flaticon.es/svg/static/icons/svg/20/20837.svg) !important;
+}
+
+#block-menu-menu-social-connection .content ul.menu li a.twitter {
+    background-image: url(https://www.flaticon.es/svg/static/icons/svg/733/733614.svg) !important;
+}
+
+/* SEPARAR BLOQUES UNO BAJO OTRO EN PAGINA PRINCIPAL*/
+
+
+
+#block-views-visitamarketplace-block {
+    margin-top: 40px;
+    text-align: center;
+}
+
+#block-views-sobre-nosotros-block {
+    margin-top: 40px;
+    text-align: center;
+    
+}
+
+#block-views-producto-del-mes-block {
+    margin-top: 40px;
+    text-align: center;
+}
+
+#block-views-portafolio-block {
+    margin-top: 40px;
+    text-align: center;
+}
+
+
+/* PRINCIPAL  VISITA MARKET PLACE */
+
+#block-views-visitamarketplace-block {
+    text-align: center;
+}
+
+
+/*  PRINCIPAL VISITA MARKET-PLACE FOTO  */
+
+
+.views-field-field-textosobreimagenvisita {
+    position: absolute;
+    top: 10%;
+    width: inherit;
+}
+
+.hola{
+    position: absolute;
+    top: 50%;
+    width: -webkit-fill-available;
+
+}
+
+
+/*  PRINCIPAL SOBRE NOSOTROS  */
+
+.lado-lado {
+    display: flex !important;
+}
+
+
+.parrafos {
+    width: 50%;
+    padding: 35px;
+    display: flex;
+    align-items: center;
+}
+
+.parrafo-delmes {
+    background-color: #F3D5CE;
+    width: 50%;
+    padding: 35px;
+    display: flex;
+    align-items: center;
+}
+
+.imagen-delmes {
+    width: 50%;
+    padding: 0px;
+    display: flex;
+    align-items: center;
+}
+
+
+
+/*  LOGIN  */
+
+#user_login_form {
     text-align: center;
     width: 50%;
 }
 
-
-.field-label-above {
-    width: 50%;
-}
-
-.content .clearfix {
+.create-account {
     display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
 } 
- */
 
-.region-menu-inner > .clearfix:after {
 
+#edit-name {
+    background: #e0e0e0 !important;
 }
+
+#edit-pass {
+    background: #e0e0e0 !important;
+}
+
+/* Zona preface*/
+.zone-preface{
+    background-color:transparent !important;
+}
+
