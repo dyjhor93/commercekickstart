@@ -1,3 +1,50 @@
+@media only screen and (max-width: 1024px) {
+   
+    /* aqui el codigo para responsive*/
+
+    .redes-sociales {
+        background-color:#25d366;
+        color:#FFF;
+        border-radius:15px;
+        text-align:center;
+        font-size:30px;
+        box-shadow: 2px 2px 3px #999;
+        z-index:100;
+    }
+}
+
+
+@media only screen and (min-width: 1024px) {
+   
+    /* Redes Sociales Flotante */
+    
+    .redes-sociales {
+        position:fixed;
+        width:60px;
+        bottom:50%;
+        right:0px;
+        background-color:#25d366;
+        color:#FFF;
+        text-align:center;
+        font-size:30px;
+        box-shadow: 2px 2px 3px #999;
+        z-index:100;
+    }
+
+    .float:hover {
+        text-decoration: none;
+        color: #25d366;
+        background-color:#fff;
+    }
+
+    .red-facebook {background-image: url(facebook\ \(1\).png) 50px ;}
+
+    .my-float{
+        margin-top:16px;
+    }
+
+
+}
 
 body {
     background-color: #f6ebe2;
@@ -281,3 +328,6 @@ body {
     background-color:transparent !important;
 }
 
+
+
+/*------------------------------------------------------------------------------------------------*/
