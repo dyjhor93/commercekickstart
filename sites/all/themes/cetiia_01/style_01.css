@@ -1,17 +1,50 @@
+@import url(//db.onlinewebfonts.com/c/e55e9079ee863276569c8a68d776ef04?family=Futura+Bk+BT);
+body {
+    background-color: #f6ebe2;
+    font-family: Futura Bk BT !important;
+}
+
+.text-center{
+    text-align: center !important;
+}
+
+
 @media only screen and (max-width: 1024px) {
    
     /* aqui el codigo para responsive*/
 
     .redes-sociales {
-        background-color:#25d366;
+        background-color:#ffffff;
         color:#FFF;
         border-radius:15px;
-        text-align:center;
+        text-align: center;
         font-size:30px;
         box-shadow: 2px 2px 3px #999;
         z-index:100;
+        justify-content: center;
+    }
+   
+
+
+    /* CENTRAR CONTENEDOR TEXT SOBRE NOSOTROS */
+    .views-field.views-field-field-link-sobre-nosotros {
+        width: 100% !important;
+    }
+
+  
+    /* CENTRAR CONTENEDOR TEXT COME SANO */
+    .views-row.views-row-1 {display: grid !important;}
+
+
+    /* CENTRAR EN DISEÑO RESPONSIVO PARA EL DIV TEXT - COME SANO */
+    .view-come-sano .views-row .field-content {
+        text-align: center;
     }
 }
+
+
+
+
 
 
 @media only screen and (min-width: 1024px) {
@@ -23,9 +56,9 @@
         width:60px;
         bottom:50%;
         right:0px;
-        background-color:#25d366;
+        background-color:#000000;
         color:#FFF;
-        text-align:center;
+        text-align: center;
         font-size:30px;
         box-shadow: 2px 2px 3px #999;
         z-index:100;
@@ -37,18 +70,76 @@
         background-color:#fff;
     }
 
-    .red-facebook {background-image: url(facebook\ \(1\).png) 50px ;}
+    .red-facebook {background-image: url('img/facebook.png')  ;}
 
     .my-float{
         margin-top:16px;
     }
 
+     
+    /* PARA CONTACTEMOS */
+    .donde-encontrarnos {
+        display: flex;
+    }
+
+
+        
+    /*  PRINCIPAL SOBRE NOSOTROS  */
+
+
+    .views-row.views-row-1.views-row-odd.views-row-first.views-row-last.grid-24.lado-lado {
+        display: flex;
+    }
+    
+
+    .parrafo-delmes {
+        background-color: #F3D5CE;
+        width: 50%;
+        padding: 35px;
+        display: flex;
+        align-items: center;
+    }
+    
+    .views-field.views-field-field-image-sobre-nosotros {
+        width: 50%;
+    }
+
+    .views-field.views-field-field-link-sobre-nosotros {
+        display: flex;
+    }
+
+
+    .field-content.sobre-nos {
+        /*display: flex;*/
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+    }
+
+
+    .imagen-delmes {
+        width: 50%;
+        padding: 0px;
+        display: flex;
+        align-items: center;
+    }
+
+
+    
 }
 
-body {
-    background-color: #f6ebe2;
-}
 
+/* BARRA NAVEGACION DISEÑO RESPONSIVE - ESCONDE Y SACA MENU */
+
+@media only screen and (min-width: 980px){
+    
+    .navigation {
+        background-color: #f6ebe2 !important;
+        text-align: center !important;
+        display: flex !important;
+        justify-content: center !important;
+        }
+}
 
 
 /* *BARRA DE NAVEGACIÓN*/
@@ -63,7 +154,8 @@ body {
     .navigation {
         background-color: #f6ebe2 !important;
         text-align: center !important;
-    }
+        justify-content: center !important;
+        }
 
     .toggle-help {
         display: none;
@@ -79,9 +171,23 @@ body {
 
 #main-menu > li > a {
     background-color: #f6ebe2;
+    color: #000000 !important;
     border: none;
 }
 
+
+#zone-branding {
+    display: flex;
+    justify-content: center;
+}
+
+
+#region-user-first {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: #ffffff !important;
+}
 
 
 /*   *carrito de compras */
@@ -90,8 +196,6 @@ body {
     background-color: #f6ebe2 !important;
     background-image: url(https://www.flaticon.es/svg/static/icons/svg/1007/1007957.svg) !important;
 }
-
-
 
 /* ZONA USUARIO */
 
@@ -102,11 +206,9 @@ body {
 .block-menu-user-menu .content ul.menu li a {
     color: #000 !important ;
     text-decoration: none !important;
-    font-size: 1rem;
+    font-size: 1em;
 
 }
-
-
 
 
 /* *BANER DESCUENTO PRIMERA COMPRA*/
@@ -125,8 +227,6 @@ body {
 #zone-footer2-wrapper {
     background: #ffffff;
 }
-
-
 
 /* BLOQUE SLIDER COME SANO VIVE SANO*/
 
@@ -148,7 +248,6 @@ body {
 .bx-wrapper {
     height: auto !important;
 }
-
 
 
 /* VISTA PORTAFOLIO */
@@ -179,27 +278,10 @@ body {
 
 
 
-
-/* PRINCIPAL CROUSEL */
-
-
-.jcarrousel-custom{
-    width: 70%;
-    margin: auto;
-    margin-top: 30px;
-}
-
-
-
-
 /*  FOOTER */
 
 #region-footer-second {
     background: #ffffff;
-}
-
-.content .menu {
-    display: flex;
 }
 
 
@@ -209,6 +291,7 @@ body {
 
 #block-menu-menu-social-connection .content ul.menu li a.pinterest {
     background-image: url(https://www.flaticon.es/svg/static/icons/svg/733/733622.svg) !important;
+    
 }
 
 #block-menu-menu-social-connection .content ul.menu li a.facebook {
@@ -220,7 +303,6 @@ body {
 }
 
 /* SEPARAR BLOQUES UNO BAJO OTRO EN PAGINA PRINCIPAL*/
-
 
 
 #block-views-visitamarketplace-block {
@@ -245,58 +327,71 @@ body {
 }
 
 
+
 /* PRINCIPAL  VISITA MARKET PLACE */
 
 #block-views-visitamarketplace-block {
     text-align: center;
 }
 
+/* TEXTO SOBRE IMAGEN  */
 
-/*  PRINCIPAL VISITA MARKET-PLACE FOTO  */
-
-
-.views-field-field-textosobreimagenvisita {
-    position: absolute;
-    top: 10%;
-    width: inherit;
-}
-
-.hola{
-    position: absolute;
-    top: 50%;
-    width: -webkit-fill-available;
-
+.detras-imagen{
+    position: relative;
 }
 
 
-/*  PRINCIPAL SOBRE NOSOTROS  */
-
-.lado-lado {
-    display: flex !important;
+@media only screen and (min-width: 1000px) {
+    
+    .texto-sobre{
+        width: 100%;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        font-size: 1em !important; 
+    } 
 }
 
 
-.parrafos {
-    width: 50%;
-    padding: 35px;
-    display: flex;
-    align-items: center;
+
+@media only screen and (max-width: 1000px) {
+    .texto-sobre{
+        width: 100%;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        font-size: 0.9em !important; 
+    } 
+
+    .field.field-name-field-imagevisita.field-type-image.field-label-hidden > .field-items > .field-item.even > img {
+        height: 8.5em !important;
+    }
+
+    .a4.x > a, .webform-submit.button-primary.form-submit{
+        cursor: pointer;
+        border: 1px solid #6D85A8;
+        border-radius: 1px;
+        color: #6D85A8;
+        font-size: 0.8em;
+        line-height: inherit;
+        padding: 2% 5% !important;
+        text-transform: uppercase;
+        transition: all 0.25s ease 0s;
+      }
+      
+      .a4.x:hover,
+      .a4.x:active,
+      .a4.x:focus {
+          border-color: #299FFF;
+          color: #299FFF;
+      }
 }
 
-.parrafo-delmes {
-    background-color: #F3D5CE;
-    width: 50%;
-    padding: 35px;
-    display: flex;
-    align-items: center;
-}
 
-.imagen-delmes {
-    width: 50%;
-    padding: 0px;
-    display: flex;
-    align-items: center;
-}
+
+
 
 
 
@@ -329,5 +424,420 @@ body {
 }
 
 
-
 /*------------------------------------------------------------------------------------------------*/
+
+
+
+/* Clase para texto en negrilla */
+.text-bold{
+    font-weight: bold;
+    font-size: 1.5em;
+}
+
+/* iframe - mapa google*/
+iframe{
+    width: 100%;
+}
+
+
+
+
+/*  ESTE SE  HACE PARA EL RESPONSIVE DEL TEXTO / IMAGEN  */
+
+@media only screen and (min-width: 1000px) { 
+
+    .views-field-field-compre-aqui {
+        width: 50% !important;
+        margin: auto;
+        display: flex ;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+    }
+
+}
+
+@media only screen and (max-width: 1000px) {
+
+    .views-field-field-compre-aqui {
+        width: 100% !important;
+        margin: auto;
+        display: flex ;
+        align-items: center;
+        justify-content: center;
+    }
+
+    
+
+    .imagen-delmes {
+        margin: auto;
+        width: auto;
+    }
+
+    .views-field.views-field-field-imagencomesano {
+        width: 100% !important;
+        margin: auto;
+        display: flex ;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+    }
+
+    .views-row {
+        max-width: 100% !important;
+        align-self: center;
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+.views-field.views-field-field-link-sobre-nosotros {
+    width: 50%;
+}
+
+.views-field.views-field-field-link-sobre-nosotros > img {
+    width: 100% !important;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* PRINCIPAL CROUSEL */
+.jcarrousel-custom{
+    background-color: #FEFFFF;
+}
+
+    /*  ESTE SE HACE PARA EL RESPONSIVE DEL CAROUSEL  */ 
+    @media only screen and (min-width: 1000px) {
+
+        .block-inner .block-title {text-align: center !important;}
+        
+        .jcarrousel-custom{
+            width: 60%;
+            margin: auto;
+            margin-top: 30px;
+        }
+    }
+
+    @media only screen and (min-width: 1000px) {
+
+        .block-inner .block-title {text-align: center !important;}
+
+        .jcarrousel-custom{
+            width: 80%;
+            margin: auto;
+            margin-top: 30px;
+        }
+    }
+
+
+
+table, th, td {
+    border: 1px solid black !important;
+}
+.clase-grupo-texto{
+    background-color: yellow !important;
+}
+
+
+
+
+/* ESTO PARA NO QUITAR EL CARRITO DE COMPRAS EN LA NAV - DISEÑO RESPONSIVE AL DESPLEGAR  */ 
+
+#zone-header nav.navigation.clearfix {
+    margin: none !important;
+    padding: 0;
+    width: auto !important; 
+    min-width: 0 !important;
+    background-color: white;
+}
+
+
+/* PARA CONTACTENOS */
+
+#block-views-cont-ctenos-block, #block-views-donde-encontrarnos-block{
+    background-color: #f3d5ce;
+}
+
+.form-text {
+    width: 100%;
+    height: 45px;
+    background: #e0e0e0 !important;
+    border-bottom: 1px solid #000 !important;}
+
+textarea {
+    background: #e0e0e0 !important;
+    border-bottom: 1px solid #000 !important;
+}
+
+
+.block-title {font-size: 2em !important;
+    text-align: center;
+    margin-top: 20px !important;
+}
+
+.field-content.text-bold {
+    font-size: 1.5em !important;
+    text-align: center;
+    margin-top: 20px !important;
+}
+
+
+
+
+/* ESTE PARA CENTRAR CUALQUIER DIV */
+.centrar-div {
+    display: flex;
+    justify-content: center;
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+
+
+/* SE HACE PARA EL FOOTER 2 */
+@media only screen and (min-width: 800px) {
+    
+    #zone-footer2 {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+}
+
+
+/* ESTILOS BOTON */
+
+.a4.x{
+    margin: 4% 0%;
+    
+}
+.a4.x > a, .webform-submit.button-primary.form-submit{
+    cursor: pointer;
+    border: 1px solid #6D85A8;
+    border-radius: 3px;
+    color: #6D85A8;
+    font-size: 16px;
+    line-height: inherit;
+    padding: 2% 5% !important;
+    text-transform: uppercase;
+    transition: all 0.25s ease 0s;
+  }
+  
+  .button:hover,
+  .button:active,
+  .button:focus {
+      border-color: #299FFF;
+      color: #299FFF;
+  }
+
+
+  /* ALINEAS PORTAFOLIO Y CENTRARLO EN SU CONTENEDOR */
+
+  #block-views-sobre-nosotros-block-1 .views-row {
+    /* display: flex; */
+    /* flex-grow: 3 !important; */
+    /* flex-shrink: 8 !important; */
+    margin-left: 10px !important;
+    margin-right: 10px !important; 
+}
+
+
+
+nav.navigation.clearfix {
+    margin: 0;
+    padding: 0;
+    width: auto;
+    min-width: 0;
+}
+
+
+
+
+/***main-menu***/
+
+
+#zone-header .region-inner.region-menu-inner {
+    display: flex;
+}
+
+#zone-header nav.navigation.clearfix {
+    margin: -56px auto 0 auto !important;
+    padding: 0;
+    width: auto !important;
+    min-width: 0 !important;
+    background-color: white;
+  
+}
+
+/***id="block-views-sobre-nosotros-block-1 (PORTAFOLIO) **/
+
+div#region-postscript-third {
+    width: 100%;
+}
+
+#block-views-sobre-nosotros-block-1 .region-inner.region-menu-inner {display: flex;}
+
+
+#block-views-sobre-nosotros-block-1 .view-content {
+    width: 100%;
+    display: flex;
+    flex-flow: wrap;
+}
+
+#block-views-sobre-nosotros-block-1 .views-row {
+    /* display: flex; */
+    width: 100%;
+    flex: 4 2 0;
+    /* flex-grow: 3 !important; */
+    /* flex-shrink: 8 !important; */
+    margin: 0;
+    padding: 0;
+    min-width: 21% !important;
+}
+
+/*****vive sano*****/
+.view-come-sano .collapsible.group-grup-textcomesano.field-group-div.speed-fast.effect-none.fieldgroup-effects-processed {
+    width: auto;
+    display: block;
+}
+
+.view-come-sano article#node-imagen-come-sano-50 {
+    margin: 0;
+    padding: 0;
+    border: 0;
+}
+
+.view-come-sano .field.field-name-field-imagencomesano.field-type-image.field-label-hidden {
+    width: 50%;
+    align-self: center;
+}
+
+.view-come-sano .collapsible.group-grup-textcomesano.field-group-div.speed-fast.effect-none.fieldgroup-effects-processed {
+    width: fit-content;
+    align-self: center;
+}
+
+.view-come-sano .content.clearfix {
+    display: flex;
+}
+
+
+/********.view-carrusel ***************/
+.view-carrusel .view-come-sano .content.clearfix {
+    display: flex;
+}
+
+
+.view-carrusel li.odd.jcarousel-item.jcarousel-item-horizontal {
+    background: white;
+}
+
+
+.view-carrusel .views-field-title-field, .views-field.views-field-commerce-price {
+    background: white;
+    border: 1px solid #CCC;
+}
+
+.view-carrusel  .views-field.views-field-commerce-price {
+    border-top: 0;
+}
+
+.view-carrusel .views-field-title-field {
+    border-top: 0;
+    border-bottom: 0;
+
+}
+.form-text, .form-textarea{
+    background-color: #fff !important;
+    background: #fff !important;
+    }
+
+    .text-portafolio{
+        background-color: #fff;
+        margin: 8%;
+        padding: 1%;
+    }
+
+
+/*****vive sano*****/
+li.views-row.views-row-1 {
+    display: flex;
+    max-width: 100%;
+}
+.view-come-sano .views-row img {
+    width:100%;
+    height:auto;
+
+}
+.view-come-sano .views-row .field-content {
+ margin:15px;
+}
+
+
+
+/*Admin Dark*/
+body.toolbar #toolbar div.toolbar-menu, #toolbar{
+    background-color: #000 !important;
+    background: #000 !important;
+}
+#toolbar-home{
+    display: none;
+}
