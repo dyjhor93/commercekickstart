@@ -1,0 +1,1514 @@
+<?php
+
+/**
+ * @file
+ * Provides basic underlying functionality and configuration options used
+ * by pagebuilder.
+ */
+
+module_load_include('inc', 'pagebuilder', 'tier.api');
+
+/**
+ * Implements hook_menu
+ *
+ * Operations and page callbacks for building pages
+ */
+function pagebuilder_menu() {
+  $items = array();
+
+  // Local task for users to manage rows from node full display
+  $items['node/%node/tiers'] = array(
+    'title'            => 'Page builder',
+    'type'             => MENU_LOCAL_TASK,
+    'access callback'  => array('pagebuilder_localtask_access'),
+    'access arguments' => array(1),
+    'page callback'    => 'pagebuilder_tier_order_view',
+    'page arguments'   => array(1),
+  );
+
+  // Add a new tier to a node
+  $items['tier/add/%/%node/%/%ctools_js'] = array(
+    'title'            => 'Add tier',
+    'type'             => MENU_CALLBACK,
+    'page callback'    => 'tier_add',
+    'page arguments'   => array(2, 3, 4, 5),
+    'access callback'  => array('node_access'),
+    'access arguments' => array('update', 3),
+    'file'             => 'tier.pages.inc',
+    'file path'        => drupal_get_path('module', 'pagebuilder'),
+  );
+
+  // Tier operations 
+  $items['node/%node/tier/%/%/%'] = array(
+    'title'            => 'Operation', 
+    'page callback'    => 'pagebuilder_node_tier_ops',
+    'page arguments'   => array(1, 3, 4, 5, 6),
+    'access callback'  => 'node_access', //'user_is_logged_in',
+    'access arguments' => array('update', 1),
+    'type'             => MENU_CALLBACK,
+  );
+
+  return $items;
+}
+
+/**
+ * Load tiers of a node, update their row positions (if not yet already in
+ * order)
+ * 
+ * @param $node
+ *          The node object the tiers are associated with
+ *
+ * @return $tiers
+ *          An array of loaded tier objects, keyed (and sorted) by row_position
+ */
+function pagebuilder_tiers_load($node) {
+  $is_admin = node_access('update', $node);
+  
+  $tiers = array();
+  $result = pagebuilder_fetch_tiers_by_parentnid($node->nid);
+
+  $tier_types = variable_get('pagebuilder_tiertypes_' . $node->type, NULL);
+  // dpm($result, 'The db result of the entity query');
+  // dpm($tier_types, 'Types enabled for this node');
+  
+  $i = 0;
+  foreach ($result as $tier_id => $tier_info) {
+    // Check that this tier is of the enabled types
+    if (in_array($tier_info->type, $tier_types)) {
+      $i++;
+      $tier = tier_load($tier_id);
+      $tiers[$i] = $tier;
+
+      // Fix any anomolies from enabled/disabled row types that may change the
+      // order they were saved in
+      if ($tier->row_position != $i) {
+        if ($is_admin) {
+          drupal_set_message(
+            t(
+              'Shifting tier @tier_id to position: @position',
+              array('@tier_id' => $tier->tier_id, '@position' => $i)
+            ), // end t()
+            'warning'
+          ); // end drupal_set_message()
+        } // endif is_admin
+        $tier->row_position = $i;
+        entity_save('tier', $tier);
+      }
+    }
+  }
+  
+  return $tiers;
+}
+
+/**
+ * Tier operations on a node. Use this function to operate on tiers associated
+ * with a node
+ *
+ * @param $node
+ *            A loaded node object
+ * @param $tier_id
+ *            The tier ID that needs to be influenced
+ *            This is the tier bundle machine name for "add" ops
+ * @param $op
+ *            The operation that needs to happen, e.g. 'add', 'swop', 'move',
+ *            'pop' or 'shift'
+ * @param $position
+ *            Integer value of the current row position (default row position
+ *            for new tiers)
+ * @param $new_position
+ *            The position the tier would take _after_ the operation - this is
+ *            optional for most ops
+ *
+ * @return $markup
+ *            Either a form or a page - most ops will redirect before returning
+ *            anything
+ */
+function pagebuilder_node_tier_ops($node, $tier_id, $op, $position, $new_position = NULL) {
+  // Load up some default values
+  $tiers      = pagebuilder_tiers_load($node); // AE: I wonder if this is better via the menu and sent as a parameter?
+  $tier_count = count($tiers);
+
+  switch ($op) {
+    case 'move-first':
+      // For all the rows up to the original position
+      for ($x = 1; $x < $position; $x++) {
+        $tier_temp = $tiers[$x];
+        // Increment row position by one
+        $tier_temp->row_position = $x + 1;
+        entity_save('tier', $tier_temp);
+      }
+      
+      // Set the one moved to have a weight of 1
+      $tier_temp = $tiers[$position];
+      $tier_temp->row_position = 1;
+      entity_save('tier', $tier_temp);
+      break;
+
+    case'swop':
+    case 'move-up':
+    // These operations are identical
+    // NOTE: No break;
+    case 'move-down':
+      // Swopping two spots essentially
+      // Load the entities
+      $tier1 = $tiers[$position];
+      $tier2 = $tiers[$new_position];
+
+      // Set the new row positions
+      $tier1->row_position = $new_position;
+      $tier2->row_position = $position;
+      
+      // dpm($tier1, 'The first tier');
+      // dpm($tier2, 'The affected tier');
+
+      // Save the entities
+      entity_save('tier', $tier1);
+      entity_save('tier', $tier2);
+      break;
+    
+    case 'move-last':
+      // for all the rows after the original position
+      for ($x = $position + 1; $x <= $tier_count; $x++) {
+        $tier_temp = $tiers[$x];
+        $tier_temp->row_position = $x - 1;
+        entity_save('tier', $tier_temp);
+      }
+    
+      // Move the selected row to the last position
+      $tier_temp = $tiers[$position];
+      $tier_temp->row_position = $tier_count;
+      entity_save('tier', $tier_temp);
+      break;
+
+    default:
+      drupal_set_message(t('Undefined operation: @operation', array('@operation' => $op)), 'error');
+      break;
+  }
+
+  // dpm($node, 'The node object passed to the form/operation');
+  // dpm($tiers, 'The existing tiers on $node ' . $node->title);
+  // dpm($op, 'The operation called');
+  // dpm($tier_id, 'The tier type being added, or the tier ID');
+  // dpm($position, 'The current (or new) row position');
+  // dpm($new_position, 'The new row_position after operation ' . $op);
+
+  $query = drupal_get_query_parameters();
+  if ($query) {
+    drupal_goto();
+  }
+
+  // @TODO: Add something to return if there's no query string
+  return $markup = '';
+}
+
+
+/**
+ * Access callback: determines if the user can create any type of Tier.
+ */
+function pagebuilder_tier_add_any_access() {
+  // Grant automatic access to users with administer tier permission.
+  if (user_access('administer tier entities')) {
+    return TRUE;
+  }
+
+  // Check the user's access on a product type basis.
+  foreach (tier_types() as $type => $member_type) {
+    if (tier_access('create', entity_create('tier', array('type' => $type)))) {
+      return TRUE;
+    }
+  }
+
+  return FALSE;
+}
+
+/**
+ * Pagebuilder node local task access check
+ *
+ * @param $node
+ *          A loaded node object to access check on
+ *  
+ * @return TRUE
+ *           if logged in user has update access to the node AND the node->type
+ *           has tiers enabled
+ */
+function pagebuilder_localtask_access($node) {
+  $has_tiers = pagebuilder_has_tiers($node);
+  if ($has_tiers) {
+    if (node_access('update', $node)) {
+      return TRUE;
+    }
+    else {
+      return FALSE;
+    }
+  }
+  else {
+    return FALSE;
+  }
+}
+
+/**
+ * Implements hook_entity_info().
+ */
+function pagebuilder_entity_info() {
+  $info = array();
+
+  $info['tier'] = array(
+    'label' => t('Tier'),
+    'entity class' => '\Drupal\pagebuilder\Entity\Tier\Tier',
+    'controller class' => '\Drupal\pagebuilder\Entity\Tier\TierController',
+    'base table' => 'tier',
+    'fieldable' => TRUE,
+    'entity keys' => array(
+      'id' => 'tier_id',
+      'label' => 'title',
+      'bundle' => 'type',
+    ),
+    'bundle keys' => array(
+      'bundle' => 'type',
+    ),
+    'access callback' => 'tier_access',
+    'access arguments' => array(
+      'user key' => 'uid',
+      'access tag' => 'tier_access',
+    ),
+    'permission labels' => array(
+      'singular' => t('Tier'),
+      'plural' => t('Tiers'),
+    ),
+    'label callback' => 'entity_class_label',
+    'uri callback' => 'entity_class_uri',
+    'module' => 'pagebuilder',
+    'views controller class' => '\Drupal\pagebuilder\Entity\Tier\TierViewsController',
+    'admin ui' => array(
+      'path' => 'admin/content/tier',
+      'file' => 'tier.entity.inc',
+      'controller class' => '\Drupal\pagebuilder\Entity\Tier\TierUIController',
+      'menu wildcard' => '%tier'
+    ),
+  );
+
+  // Add bundle info but bypass entity_load() as we cannot use it here.
+  $types = db_select('tier_type', 't')
+    ->fields('t')
+    ->execute()
+    ->fetchAllAssoc('type');
+
+  foreach ($types as $type_name => $type) {
+    $info['tier']['bundles'][$type_name] = array(
+      'label'             => $type->label,
+      'admin'             => array(
+        'path'            => 'admin/structure/tier-types/manage/%tier_type',
+        'real path'       => 'admin/structure/tier-types/manage/' . $type_name,
+        'bundle argument' => 4,
+      ),
+    );
+    
+    $info['tier']['view modes'] = array(
+      'row'               => array(
+        'label'           => t('Row'),
+        'custom settings' => TRUE,
+      ),
+      'column'            => array(
+        'label'           => t('Column'),
+        'custom settings' => FALSE,
+      ),
+      'admin'             => array(
+        'label'           => t('Admin'),
+        'custom settings' => FALSE,
+      ),
+    );
+  }
+
+  $info['tier_type'] = array(
+    'label' => t('Tier type'),
+    'entity class' => '\Drupal\pagebuilder\Entity\Tier\TierType',
+    'controller class' => '\Drupal\pagebuilder\Entity\Tier\TierTypeController',
+    'base table' => 'tier_type',
+    'fieldable' => FALSE,
+    'bundle of' => 'tier',
+    'exportable' => TRUE,
+    'entity keys' => array(
+      'id' => 'id',
+      'name' => 'type',
+      'label' => 'label',
+    ),
+    'access callback' => 'tier_type_access',
+    'module' => 'pagebuilder',
+    'admin ui' => array(
+      'path' => 'admin/structure/tier-types',
+      'file' => 'tier.entity.inc',
+      'controller class' => '\Drupal\pagebuilder\Entity\Tier\TierTypeUIController',
+    ),
+  );
+
+  return $info;
+}
+
+/**
+ * Implements hook_entity_property_info_alter().
+ */
+function pagebuilder_entity_property_info_alter(&$info) {
+  $properties = &$info['tier']['properties'];
+  $properties['created'] = array(
+    'label' => t('Date created'),
+    'type' => 'date',
+    'description' => t('The date the Tier was posted.'),
+    'setter callback' => 'entity_property_verbatim_set',
+    'setter permission' => 'administer nodes',
+    'schema field' => 'created',
+  );
+  $properties['changed'] = array(
+    'label' => t('Date changed'),
+    'type' => 'date',
+    'schema field' => 'changed',
+    'description' => t('The date the Tier was most recently updated.'),
+  );
+  $properties['uid'] = array(
+    'label' => t('Author'),
+    'type' => 'user',
+    'description' => t('The author of the Tier.'),
+    'setter callback' => 'entity_property_verbatim_set',
+    'setter permission' => 'administer tier entities',
+    'required' => TRUE,
+    'schema field' => 'uid',
+  );
+  $properties['parent_nid'] = array(
+    'label'     => t('Parent node ID'),
+    'required'  => TRUE,
+  );
+  $properties['row_position'] = array(
+    'label'     => t('Tier position'),
+    'required'  => TRUE,
+  );
+}
+
+/**
+ * Implements hook_forms().
+ *
+ * @param $node
+ *   The node (loaded object) this tier (row) belong to - default NULL - I'm
+ *   still learning wtf I'm doing
+ *
+ * @return array $forms
+ *   The generated forms
+ */
+function pagebuilder_forms($node = NULL) {
+  $forms = array();
+  if ($types = tier_types()) {
+    foreach (array_keys($types) as $type) {
+      $forms[$type . '_tier_form']['callback'] = 'tier_form';
+    }
+  }
+  
+  return $forms;
+}
+
+/**
+ * Implements hook_form()
+ *
+ * A sortable table form of the attached tiers to a node
+ *
+ * @param $node
+ *    A loaded node object (possibly from hook_menu)
+ *
+ * @return array $form
+ *    The generated sort form
+ */
+function pagebuilder_tier_sort_form($form, &$form_state, $node) {
+  $form   = array();
+
+  // $tiers  = pagebuilder_fetch_tiers_by_parentnid($node->nid);
+  $tiers      = pagebuilder_tiers_load($node);
+  $tier_count = count($tiers);
+
+  $form['node_tiers'] = array(
+    '#tree' => TRUE,
+  );
+
+  // We need the english name for each of the tier types too
+  $entity_info = entity_get_info('tier');
+  // dpm($entity_info, 'Entity info');
+  // '@tiertypename' => strtolower($entity_info['bundles'][$tier_type_name]['label']),
+
+  foreach ($tiers as $position => $tier) {
+    $form['node_tiers'][$position] = array(
+      'tier_type' => array(
+        '#markup' => $entity_info['bundles'][$tier->type]['label'],
+      ),
+      'sub_heading' => array(
+        '#markup'   => (!empty($tier->title)) ? check_plain($tier->title) : '<em>' . t('No sub-heading') . '</em>',
+      ),
+      'position'    => array(
+        '#type'     => 'hidden',
+        '#value'    => $position,
+      ),
+      'tier_id'     => array(
+        '#type'     => 'hidden',
+        '#value'    => $tier->tier_id,
+      ),
+      'weight' => array(
+        '#type' => 'weight',
+        '#title' => t('Position'),
+        '#default_value' => $position,
+        '#delta' => $tier_count,
+        '#title_display' => 'invisible',
+        '#attributes' => array('class' => array('tier-item-row-weight')),
+      ),
+    );
+
+    // dpm($tier, $position . ' position tier');
+  } // endforeach tiers
+
+  // Now we add our submit button, for submitting the form results.
+  //
+  // The 'actions' wrapper used here isn't strictly necessary for tabledrag,
+  // but is included as a Form API recommended practice.
+  $form['actions'] = array('#type' => 'actions');
+  $form['actions']['submit'] = array('#type' => 'submit', '#value' => t('Save changes'));
+
+  // dpm($node, 'The loaded node object');
+  // dpm($tiers, 'This nodes tiers');
+  // dpm($form, 'My form so far');
+  return $form;
+}
+
+/**
+ * Submit function for pagebuilder_tier_sort_form()
+ *
+ * Add new positions for the submitted values of tiers
+ */
+function pagebuilder_tier_sort_form_submit($form, &$form_state) {
+  $order = array(); $i = 1;
+  // $order = $form_state['values']['node_tiers'];
+
+  // Sort the submitted values by weight, so we can update their positions
+  // in the correct order
+  foreach ($form_state['values']['node_tiers'] as $original_position => $tier_meta) {
+    $weight = $tier_meta['weight'];
+    $order[$weight] = $tier_meta;
+  }
+  ksort($order);
+
+  foreach ($order as $weight => $tier_meta) {
+    // @TODO: Check if the position has changed before this process (what if
+    //         we are parsing 100,000 rows? Hah! I know.. unlikely.. but still)
+    $tier = entity_load('tier', array($tier_meta['tier_id']));
+    $tier = reset($tier);
+    // dpm($tier, 'The loaded tier object');
+    
+    $tier->row_position = $i;
+    entity_save('tier', $tier);
+    $i++;
+
+    // dpm($tier, 'The loaded tier object');
+  }
+
+  // dpm($order, 'The submitted order');
+  // dpm($form_state, 'The submitted form state');
+}
+
+/**
+ * Implements hook_form_FORM_ID_alter(). 
+ *
+ * Extend node options to enable Tier types and set which tier types to
+ * display per node type
+ */
+function pagebuilder_form_node_type_form_alter(&$form, $form_state) {
+  if (isset($form['type'])) {
+    $form['pagebuilder'] = array(
+      '#type'          => 'fieldset',
+      '#title'         => t('Page builder settings'),
+      '#collapsible'   => TRUE,
+      '#collapsed'     => TRUE,
+      '#group'         => 'additional_settings',
+    );
+
+    $property_info = entity_get_property_info('tier');
+    $entity_info = entity_get_info('tier');
+
+    if (isset($property_info['bundles']) && !empty($property_info['bundles'])) {
+      // dpm($property_info, 'Entity get property info');
+      // dpm($entity_info, 'Entity info');
+      // We know there's at least one tier type now (row type, until we introduce columns as well)
+
+      $form['pagebuilder']['pagebuilder'] = array(
+        '#type'          => 'checkbox',
+        '#title'         => t('Enable page builder for this content type'),
+        '#default_value' => isset($form['pagebuilder']['pagebuilder']) ? $form['pagebuilder']['pagebuilder'] : variable_get('pagebuilder_' . $form['#node_type']->type, FALSE),
+      );
+      
+      $tier_options = array();
+      foreach ($entity_info['bundles'] as $machine_name => $properties) {
+        $tier_options[$machine_name] = $properties['label'];
+      }
+      
+      // dpm($tier_options, 'Form options');
+      $form['pagebuilder']['pagebuilder_tiertypes'] = array(
+        '#type'          => 'checkboxes',
+        '#title'         => t('Tier types'),
+        '#description'   => t('Enable/Disable the following tier types for this content type.'),
+        '#default_value' => isset($form['pagebuilder']['pagebuilder_tiertypes']) ? $form['pagebuilder']['pagebuilder_tiertypes'] : variable_get('pagebuilder_tiertypes_' . $form['#node_type']->type, array()),
+        '#options'       => $tier_options,
+        '#required'      => FALSE,
+        '#states' => array(
+          'visible' => array(   // action to take.
+            ':input[name=pagebuilder]' => array('checked' => TRUE),
+          ),
+        ),
+      );
+      
+    }
+    else {
+      $link = url('admin/structure/tier-types/add', array('absolute' => TRUE,));
+      $form['pagebuilder']['pagebuilder_notiers'] = array(
+        '#type'          => 'markup',
+        '#markup'        => t('To enable page builder tiers, create some tier types at !link', array('!link' => l($link, $link))),
+      );
+    }
+  }
+  // dpm($form, 'The form');
+}
+
+/**
+ * Implements hook_form_alter()
+ *
+ * Add inline form elements to node bundles that have the pagebuilder enabled
+ *
+ * @see hook_field_attach_form()
+ */
+function pagebuilder_form_alter(&$form, &$form_state, $form_id) {
+  // Soooo only on node add and node edit forms that have page builder
+  // bundles enabled
+  if (isset($form['#node_edit_form']) && $form['#node_edit_form'] == TRUE) {
+    // Check if this bundle has Page builder enabled
+    $has_tiers = variable_get('pagebuilder_'. $form['type']['#value'], NULL);
+  
+    if ($has_tiers) {
+      // Create an empty fieldset for care of hook_field_attach_form()
+      $form['pagebuilder'] = array(
+        '#type'        => 'fieldset',
+        '#title'       => t('Page builder'),
+        // '#collapsible' => TRUE,
+        // '#collapsed'   => TRUE,
+        '#group'       => 'additional_settings',
+      );
+      
+      // @TODO: Make this form submit with AJAX
+      if (isset($form['nid']) && !empty($form['nid']['#value'])) {
+        $node = node_load($form['nid']['#value']);
+       
+        // AE: This is creating problems on node submit
+        // @TODO: See todo about AJAX above
+        // $form['pagebuilder']['sort_form'] = drupal_get_form('pagebuilder_tier_sort_form', $node);
+      }
+      else {
+        $form['pagebuilder']['sort_form']['#markup'] = '<p>' . t('Save this node to add tiers.') . '</p>';
+      }
+    }
+    // dpm($form, 'The node add.edit form');
+  }
+}
+
+/**
+ * Implements hook_preprocess_entity()
+ *
+ * Add theme_hook_suggestions for tier entities
+ */
+function pagebuilder_preprocess_entity(&$variables) {
+  if($variables['elements']['#entity_type'] = "tier") {
+    // Add the display mode into the classes array
+    $variables['classes_array'][] = 'tier-' . $variables['elements']['#view_mode'];
+
+    // While we're at it, also add theme_hook_suggestions per display mode
+    // AE: See hook_theme for template location for defaults
+    $variables['theme_hook_suggestions'][] = 'tier';
+    $variables['theme_hook_suggestions'][] = 'tier__' . $variables['elements']['#view_mode'];
+    if (isset($variables['elements']['#bundle'])) {
+      $variables['theme_hook_suggestions'][] = 'tier__' . $variables['elements']['#bundle'] . '__' . $variables['elements']['#view_mode'];
+    }
+  }
+  // dpm($variables, 'Variables: Preprocess Entity');
+}
+
+/**
+ * Theme callback for the pagebuilder_tier_sort_form form.
+ *
+ * The theme callback will format the $form data structure into a table and
+ * add our tabledrag functionality.  (Note that drupal_add_tabledrag should be
+ * called from the theme layer, and not from a form declaration.  This helps
+ * keep template files clean and readable, and prevents tabledrag.js from
+ * being added twice accidently.
+ *
+ * This copied directly from Drupal Examples module
+ * See original here:
+ * https://api.drupal.org/api/examples/tabledrag_example!tabledrag_example_simple_form.inc/7.x-1.x
+ *
+ * @return array
+ *   The rendered tabledrag form
+ *
+ * @ingroup tabledrag_example
+ */
+function theme_pagebuilder_tier_sort_form($variables) {
+  // dpm($variables, 'The variables sent to the theme function of the sort form');
+  $form = $variables['form'];
+
+  // Initialize the variable which will store our table rows.
+  $rows = array();
+
+  // Iterate over each element in our $form['example_items'] array.
+  foreach (element_children($form['node_tiers']) as $id) {
+
+    // Before we add our 'weight' column to the row, we need to give the
+    // element a custom class so that it can be identified in the
+    // drupal_add_tabledrag call.
+    $form['node_tiers'][$id]['weight']['#attributes']['class'] = array('tier-item-row-weight', 'tier-item-row-weight-' . $id);
+
+    // We are now ready to add each element of our $form data to the $rows
+    // array, so that they end up as individual table cells when rendered
+    // in the final table.  We run each element through the drupal_render()
+    // function to generate the final html markup for that element.
+    $rows[] = array(
+      'data' => array(
+        drupal_render($form['node_tiers'][$id]['tier_type']),
+        drupal_render($form['node_tiers'][$id]['sub_heading']),
+        // Add our 'weight' column.
+        drupal_render($form['node_tiers'][$id]['weight']),
+        
+      ),
+      // To support the tabledrag behaviour, we need to assign each row of the
+      // table a class attribute of 'draggable'. This will add the 'draggable'
+      // class to the <tr> element for that row when the final table is
+      // rendered.
+      'class' => array('draggable'),
+    );
+  }
+
+  // We now define the table header values.  Ensure that the 'header' count
+  // matches the final column count for your table.
+  $header = array(t('Type'), t('Sub heading/Title'), t('Weight'));
+
+  // We also need to pass the drupal_add_tabledrag() function an id which will
+  // be used to identify the <table> element containing our tabledrag form.
+  // Because an element's 'id' should be unique on a page, make sure the value
+  // you select is NOT the same as the form ID used in your form declaration.
+  $table_id = 'tier-position-table';
+
+  // We can render our tabledrag table for output.
+  $output = theme('table', array(
+    'header' => $header,
+    'rows' => $rows,
+    'attributes' => array('id' => $table_id),
+  ));
+
+  // And then render any remaining form elements (such as our submit button).
+  $output .= drupal_render_children($form);
+
+  // We now call the drupal_add_tabledrag() function in order to add the
+  // tabledrag.js goodness onto our page.
+  //
+  // For a basic sortable table, we need to pass it:
+  // - the $table_id of our <table> element,
+  // - the $action to be performed on our form items ('order'),
+  // - a string describing where $action should be applied ('siblings'),
+  // - and the class of the element containing our 'weight' element.
+  drupal_add_tabledrag($table_id, 'order', 'sibling', 'tier-item-row-weight');
+
+  return $output;
+}
+
+
+/**
+ * Check if node has tiers
+ * Use as access check for menu hooks as well
+ *
+ * @param $node
+ *          A loaded node object
+ *
+ * @return TRUE if tiers has been enabled on the provided node type
+ */
+function pagebuilder_has_tiers($node) {
+  // dpm($node, 'Access callback with node object');
+  $has_tiers = variable_get('pagebuilder_'. $node->type, NULL);
+  // dpm($has_tiers, 'This access check is being called');
+  if ($has_tiers) {
+    return TRUE;
+  }
+  else {
+    return FALSE;
+  }
+}
+
+
+/**
+ * Implements hook_node_view()
+ * Display the custom tiers enabled foreach node type
+ */
+function pagebuilder_node_view($node, $view_mode, $langcode) {
+  // Check if this current node type has pagebuilder tiers enabled
+  $has_tiers = variable_get('pagebuilder_'. $node->type, NULL);
+  // dpm($has_tiers, 'Does this node type have tiers?');
+  $has_tiers = pagebuilder_has_tiers($node);
+  
+  if ($has_tiers) {
+    $is_admin = node_access('update', $node);
+    
+    // For now, let's only focus on when we're viewing a full node
+    if ($view_mode == 'full') {
+      $tiers = pagebuilder_tiers_load($node);
+      $tier_count = count($tiers);
+      // dpm($tiers, 'This nodes tiers');
+      
+      // Load the correct tier types enabled for this node
+      $tier_types = variable_get('pagebuilder_tiertypes_' . $node->type, NULL);
+
+      $node->content['pagebuilder_tiers'] = array(
+//        '#markup' => '<h4>This will be row content</h4>',
+      );
+
+      // Load each Tier (in order, into the node object)
+      foreach ($tiers as $row_position => $tier) {
+        $tier_view = entity_view('tier', array(entity_id('tier', $tier) => $tier), 'row');
+        // AE: This returns a veery nested view of what I actually want. Need to
+        //     reset _twice_
+        //     (nested resets doesn't like the array being passed by reference,
+        //      and sends a warning)
+        $tier_view = reset($tier_view);
+        $tier_view = reset($tier_view);
+        // dpm($tier_view, 'The view object as called from entity api');
+        $node->content['pagebuilder_tiers'][] = $tier_view;
+
+      }
+      
+      // Prefix and suffix each tier with admin functions
+      if ($is_admin) {
+        foreach ($node->content['pagebuilder_tiers'] as $tier_count => $admin_tier) {
+          $bundle = $admin_tier['#bundle'];
+          // @TODO: Create a theme function for these
+          $node->content['pagebuilder_tiers'][$tier_count]['#prefix'] = '<div class="tier-admin-wrapper"><p class="tier-admin tiny">Position: ' . $admin_tier['#entity']->row_position . '</p>';
+          
+          // Add the admin links per row, e.g. Move first, move up, move down,
+          // move last
+          $actions = pagebuilder_tier_admin_actions($node, $admin_tier['#entity'], $tiers);
+          $node->content['pagebuilder_tiers'][$tier_count]['#suffix'] = render($actions);
+          $node->content['pagebuilder_tiers'][$tier_count]['#suffix'] .= '</div><!-- .tier-admin-wrapper -->';
+          // dpm($tier_count, 'The admin tier');
+          // dpm($admin_tier, 'The tier instance (key?)');
+        }
+      }
+
+      // dpm($node->content, '$content after tiers have been loaded');
+
+      // Load the Admin links for content managers
+      if ($is_admin) {
+        // Fetch the Admin Create menu for this node
+        if (count($tier_types) < 1) {
+          $node->content['pagebuilder_tier_admin_create'] = array(
+            // @TODO: Add some form of message or help here on how to activate tiers or make more or something
+          );
+          drupal_set_message(t('This page has the page manager enabled, but no tier types have been selected.'), 'warning');
+        }
+        else {
+          $node->content['pagebuilder_tier_admin_create'] = pagebuilder_tier_admin_create($node, $tier_types, $tiers);
+        }
+      } // endif is_admin
+
+      // dpm($tier_types, 'This nodes tier types enabled');
+      // dpm($node, 'This node object');
+    } // endif is full page 
+  } // endif has_tiers
+}
+
+/**
+ * Display a local task on a node full view to allow
+ * content administrator to order any tiers referencing this node
+ *
+ * @TODO: Make this work for any entity_view
+ *
+ * @param $node
+ *           The loaded node object each tier points to
+ *
+ * @return $markup
+ *           For now, let's just display the tiers loaded
+ */
+function pagebuilder_tier_order_view($node) {
+  $markup = '';
+
+  $tier_types     = variable_get('pagebuilder_tiertypes_' . $node->type, NULL);
+  $tier_admin_add = pagebuilder_tier_admin_create($node, $tier_types);
+  
+  $form           = drupal_get_form('pagebuilder_tier_sort_form', $node);
+
+  // dpm($tier_types, 'Tier types for this node');
+  // dpm($node,       'This sets parent node');
+  // dpm($tiers,      'The tiers or rows for this node');
+  
+  $form['#suffix'] = render($tier_admin_add);
+    
+  return $form;
+}
+
+/**
+ * Generate a list of action links an admin user can use to modify tiers
+ *
+ * @param $node
+ *           A loaded node object
+ * @param $tiers
+ *           An array of loaded tier entities using
+ *           pagebuilder_fetch_tiers_by_parentnid($nid)
+ * @param $tier
+ *           The current tier object to be influenced
+ *
+ * @return $actions
+ *           A renderable array of action links currently supported
+ */
+function pagebuilder_tier_admin_actions($node, $tier, $tiers = NULL) {
+  if ($tiers == NULL) {
+    // $tiers = pagebuilder_fetch_tiers_by_parentnid($node->nid);
+    $tiers = pagebuilder_tiers_load($node);
+  }
+
+  $tier_count = count($tiers);
+  $position = $tier->row_position;
+  $prev_position = $position - 1;
+  $next_position = $position + 1;
+
+  $actions = array(
+    '#theme'          => 'item_list',
+    '#title'          => NULL,
+    '#type'           => 'ul',
+    '#attributes'     => array(
+      'class'         => array('links', 'inline', 'button-group', 'but-group', 'radius', 'tier-admin-actions', 'tier-admin-actions-' . $tier->tier_id),
+    ),
+    '#prefix'         => '<div class="rw-pagebuilder-tier-admin-actions">',
+    '#suffix'         => '</div>',
+    '#items'          => array(),
+  );
+
+  // We need the english name for each of the tier types too
+  $property_info = entity_get_property_info('tier');
+  $entity_info   = entity_get_info('tier');
+  // dpm($entity_info, 'Entity info');
+
+  // Global link options
+  $options = array(
+    'html'          => TRUE,
+    'query'         => array(
+      'destination' => 'node/' . $node->nid,
+    ),
+    'attributes'    => array(
+      'class'       => array('button', 'btn', 'but', 'secondary', 'but-secondary', 'tiny', 'btn-pagebuilder-action'),
+    ),
+  );
+
+  // Move up options
+  
+  // Move first
+  // Check if it's already the first option
+  if ($tier->row_position > 1) {
+    $actions['#items'][] = l(
+      '&laquo; ' . t('Move first'),
+      'node/' . $node->nid . '/tier/' . $tier->tier_id . '/move-first/' . $tier->row_position . '/1', 
+      $options
+    );
+    // Move down
+    // http://tiger.bella.dev/node/1/tier/2/move-up/4/3?destination=node/1
+    if ($tier->row_position > 1) {
+      $actions['#items'][] = l(
+        '&lsaquo; ' . t('Move up'),
+        'node/' . $node->nid . '/tier/' . $tier->tier_id . '/move-up/' . $tier->row_position . '/' . $prev_position, 
+        $options
+      );
+    }
+  }
+
+  // Edit the entity
+  $actions['#items'][] = l(
+    '&#9998; ' .
+    t('Edit @type', array(
+      '@type' => strtolower($entity_info['bundles'][$tier->type]['label']
+    ),
+    )),
+    '/admin/content/tier/' . $tier->tier_id . '/edit', 
+    $options
+  );
+  
+  // Delete the Entity
+  $actions['#items'][] = l(
+    '&#10005; ' .
+    t('Delete @type', array(
+      '@type' => strtolower($entity_info['bundles'][$tier->type]['label']
+    ),
+    )),
+    '/admin/content/tier/' . $tier->tier_id . '/delete', 
+    $options
+  );
+
+  // Move down options
+  // Ditto to move up, check for last position
+  if ($tier->row_position < $tier_count) {
+    if ($tier->row_position < ($tier_count - 1)) {
+      $actions['#items'][] = l(
+        t('Move down') . ' &rsaquo;',
+        'node/' . $node->nid . '/tier/' . $tier->tier_id . '/move-down/' . $tier->row_position . '/' . $next_position, 
+        $options
+      );
+    }
+    $actions['#items'][] = l(
+      t('Move last') . ' &raquo;',
+      'node/' . $node->nid . '/tier/' . $tier->tier_id . '/move-last/' . $tier->row_position . '/' . $tier_count, 
+      $options
+    );
+    
+  }
+
+  // dpm($tier, 'The tier that needs actions');
+
+  return $actions;
+}
+
+/**
+ * Generate a list of "Create/Embed" links for each tier type enabled on the 
+ * provided entity bundle
+ *
+ * @param $node
+ *          A loaded node object
+ * @param $tier_types
+ *          An array of tier types enabled
+ * @param $tiers
+ *          An array of loaded tier entities using
+ *          pagebuilder_fetch_tiers_by_parentnid($nid)
+ *
+ * @return $admin
+ *          A rendereable array of links
+ */
+function pagebuilder_tier_admin_create($node, $tier_types, $tiers = NULL) {
+  if ($tiers == NULL) {
+    $tiers = pagebuilder_fetch_tiers_by_parentnid($node->nid);
+  }
+
+  // dpm($tiers, 'The loaded tiers, I thought');
+  $default_row_position = count($tiers) + 1;
+
+  $admin = array(
+    '#theme'      => 'item_list',
+    '#title'      => t('Page builder admin'), // @TODO: Change to "row" or "column" once column/row switchers are developed
+    '#type'       => 'ul',
+    '#attributes' => array(
+      'class'     => array('links', 'inline', 'button-group', 'but-group', 'radius', 'tier-admin-create', 'tier-admin-' . $node->type),
+    ),
+    '#prefix'     => '<div class="rw-pagebuilder-tier-admin-create">',
+    '#suffix'    => '</div>',
+    '#items'      => array(),
+  );
+  
+  // We need the english name for each of the tier types too
+  $property_info = entity_get_property_info('tier');
+  $entity_info = entity_get_info('tier');
+  // dpm($property_info, 'Property info');
+  // dpm($entity_info, 'Entity info');
+  
+  // @TODO: Abstract this into a (theme ?) function
+  $items = array();  
+  // AE: This fails if you delete an entity type of tier that was already saved
+  //     as a variable..
+  foreach ($tier_types as $tier_type_name) {
+    // AE: ..so we can check if it still exists in the entity info array
+    if (isset($entity_info['bundles'][$tier_type_name])) {
+      $tier_type_class = str_replace("_", "-", $tier_type_name);
+      $attributes = array(
+        'class'    => array('button', 'tiny', 'primary', 'but', 'but-tier', 'but-tier-add', 'but-tier-' . $tier_type_class),
+      );
+      $items[] = l(
+        t('Add @tiertypename', array(
+          '@tiertypename' => strtolower($entity_info['bundles'][$tier_type_name]['label']),
+        )),
+        // @TODO Better page callback that includes a node ID for the parent
+        'tier/add/' . $tier_type_name . '/' . $node->nid . '/' . $default_row_position . '/nojs',
+        array('attributes' => $attributes)
+      );
+    }
+  }
+  $admin['#items'] = $items;
+
+  return $admin;
+}
+
+/**
+ * Implements hook_permission().
+ */
+function pagebuilder_permission() {
+  $permissions = array(
+    'administer tier_type entities' => array(
+      'title' => t('Administer Tier types'),
+      'description' => t('Allows users to add Tier types and configure their fields.'),
+      'restrict access' => TRUE,
+    ),
+  );
+
+  $permissions += pagebuilder_entity_access_permissions('tier');
+
+  return $permissions;
+}
+
+/**
+ * Implements hook_query_TAG_alter().
+ */
+function pagebuilder_query_tier_access_alter(QueryAlterableInterface $query) {
+  return pagebuilder_entity_access_query_alter($query, 'tier');
+}
+
+/**
+ * Generic access control for Tier entities.
+ *
+ * @param $op
+ *   The operation being performed. One of 'view', 'update', 'create' or
+ *   'delete'.
+ * @param $entity
+ *   Optionally an entity to check access for. If no entity is given, it will be
+ *   determined whether access is allowed for all entities of the given type.
+ * @param $account
+ *   The user to check for. Leave it to NULL to check for the global user.
+ * @param $entity_type
+ *   The entity type of the entity to check for.
+ *
+ * @see entity_access()
+ *
+ * @return bool
+ *  Whether the user has access to perform the operation or not.
+ */
+function pagebuilder_entity_access($op, $entity, $account = NULL, $entity_type) {
+  global $user;
+  $account = isset($account) ? $account : $user;
+
+  $entity_info = entity_get_info($entity_type);
+
+  if ($op == 'view') {
+    if (isset($entity)) {
+      // When trying to figure out access to an entity, query the base table
+      // using our access control tag.
+      if (!empty($entity_info['access arguments']['access tag']) && module_implements('query_' . $entity_info['access arguments']['access tag'] . '_alter')) {
+        $query = db_select($entity_info['base table']);
+        $query->addExpression('1');
+        return (bool) $query
+          ->addTag($entity_info['access arguments']['access tag'])
+          ->addMetaData('account', $account)
+          ->condition($entity_info['entity keys']['id'], $entity->{$entity_info['entity keys']['id']})
+          ->range(0, 1)
+          ->execute()
+          ->fetchField();
+      }
+      else {
+        return TRUE;
+      }
+    }
+    else {
+      return user_access('view any ' . $entity_type . ' entity', $account);
+    }
+  }
+  else {
+    // First grant access to the entity for the specified operation if no other
+    // module denies it and at least one other module says to grant access.
+    $access_results = module_invoke_all('tier_entity_access', $op, $entity, $account, $entity_type);
+
+    if (in_array(FALSE, $access_results, TRUE)) {
+      return FALSE;
+    }
+    elseif (in_array(TRUE, $access_results, TRUE)) {
+      return TRUE;
+    }
+
+    // Grant generic administrator level access.
+    if (user_access('administer ' . $entity_type . ' entities', $account)) {
+      return TRUE;
+    }
+
+    // Grant access based on entity type and bundle specific permissions with
+    // special handling for the create operation since the entity passed in will
+    // be initialized without ownership.
+    if ($op == 'create') {
+      // Assuming an entity was passed in and we know its bundle key, perform
+      // the entity type and bundle-level access checks.
+      if (isset($entity) && !empty($entity_info['entity keys']['bundle'])) {
+        return user_access('create ' . $entity_type . ' entities', $account) || user_access('create ' . $entity_type . ' entities of bundle ' . $entity->{$entity_info['entity keys']['bundle']}, $account);
+      }
+      else {
+        // Otherwise perform an entity type-level access check.
+        return user_access('create ' . $entity_type . ' entities', $account);
+      }
+    }
+    else {
+      // Next perform checks for the edit and delete operations. Begin by
+      // extracting the bundle name from the entity if available.
+      $bundle_name = '';
+
+      if (isset($entity) && !empty($entity_info['entity keys']['bundle'])) {
+        $bundle_name = $entity->{$entity_info['entity keys']['bundle']};
+      }
+
+      // For the edit and delete operations, first perform the entity type and
+      // bundle-level access check for any entity.
+      if (user_access('edit any ' . $entity_type . ' entity', $account) ||
+        user_access('edit any ' . $entity_type . ' entity of bundle ' . $bundle_name, $account)) {
+        return TRUE;
+      }
+
+      // Then check an authenticated user's access to edit his own entities.
+      if ($account->uid && !empty($entity_info['access arguments']['user key']) && isset($entity->{$entity_info['access arguments']['user key']}) && $entity->{$entity_info['access arguments']['user key']} == $account->uid) {
+        if (user_access('edit own ' . $entity_type . ' entities', $account) ||
+          user_access('edit own ' . $entity_type . ' entities of bundle ' . $bundle_name, $account)) {
+          return TRUE;
+        }
+      }
+    }
+  }
+
+  return FALSE;
+}
+
+/**
+ * Return permission names for a given entity type.
+ */
+function pagebuilder_entity_access_permissions($entity_type) {
+  $entity_info = entity_get_info($entity_type);
+  $labels = $entity_info['permission labels'];
+
+  $permissions = array();
+
+  // General 'administer' permission.
+  $permissions['administer ' . $entity_type . ' entities'] = array(
+    'title' => t('Administer @entity_type', array('@entity_type' => $labels['plural'])),
+    'description' => t('Allows users to perform any action on @entity_type.', array('@entity_type' => $labels['plural'])),
+    'restrict access' => TRUE,
+  );
+
+  // Generic create and edit permissions.
+  $permissions['create ' . $entity_type . ' entities'] = array(
+    'title' => t('Create @entity_type of any type', array('@entity_type' => $labels['plural'])),
+  );
+  if (!empty($entity_info['access arguments']['user key'])) {
+    $permissions['edit own ' . $entity_type . ' entities'] = array(
+      'title' => t('Edit own @entity_type of any type', array('@entity_type' => $labels['plural'])),
+    );
+  }
+  $permissions['edit any ' . $entity_type . ' entity'] = array(
+    'title' => t('Edit any @entity_type of any type', array('@entity_type' => $labels['singular'])),
+    'restrict access' => TRUE,
+  );
+  if (!empty($entity_info['access arguments']['user key'])) {
+    $permissions['view own ' . $entity_type . ' entities'] = array(
+      'title' => t('View own @entity_type of any type', array('@entity_type' => $labels['plural'])),
+    );
+  }
+  $permissions['view any ' . $entity_type . ' entity'] = array(
+    'title' => t('View any @entity_type of any type', array('@entity_type' => $labels['singular'])),
+    'restrict access' => TRUE,
+  );
+
+  // Per-bundle create and edit permissions.
+  if (!empty($entity_info['entity keys']['bundle'])) {
+    foreach ($entity_info['bundles'] as $bundle_name => $bundle_info) {
+      $permissions['create ' . $entity_type . ' entities of bundle ' . $bundle_name] = array(
+        'title' => t('Create %bundle @entity_type', array('@entity_type' => $labels['plural'], '%bundle' => $bundle_info['label'])),
+      );
+      if (!empty($entity_info['access arguments']['user key'])) {
+        $permissions['edit own ' . $entity_type . ' entities of bundle ' . $bundle_name] = array(
+          'title' => t('Edit own %bundle @entity_type', array('@entity_type' => $labels['plural'], '%bundle' => $bundle_info['label'])),
+        );
+      }
+      $permissions['edit any ' . $entity_type . ' entity of bundle ' . $bundle_name] = array(
+        'title' => t('Edit any %bundle @entity_type', array('@entity_type' => $labels['singular'], '%bundle' => $bundle_info['label'])),
+        'restrict access' => TRUE,
+      );
+      if (!empty($entity_info['access arguments']['user key'])) {
+        $permissions['view own ' . $entity_type . ' entities of bundle ' . $bundle_name] = array(
+          'title' => t('View own %bundle @entity_type', array('@entity_type' => $labels['plural'], '%bundle' => $bundle_info['label'])),
+        );
+      }
+      $permissions['view any ' . $entity_type . ' entity of bundle ' . $bundle_name] = array(
+        'title' => t('View any %bundle @entity_type', array('@entity_type' => $labels['singular'], '%bundle' => $bundle_info['label'])),
+        'restrict access' => TRUE,
+      );
+    }
+  }
+
+  return $permissions;
+}
+
+/**
+ * Generic implementation of hook_query_alter() for Tier entities.
+ */
+function pagebuilder_entity_access_query_alter($query, $entity_type, $base_table = NULL, $account = NULL) {
+  global $user;
+
+  // Read the account from the query if available or default to the current user.
+  if (!isset($account) && !$account = $query->getMetaData('account')) {
+    $account = $user;
+  }
+
+  // Do not apply any conditions for users with administrative view permissions.
+  if (user_access('administer ' . $entity_type . ' entities', $account)
+    || user_access('view any ' . $entity_type . ' entity', $account)) {
+    return;
+  }
+
+  // Get the entity type info array for the current access check and prepare a
+  // conditions object.
+  $entity_info = entity_get_info($entity_type);
+
+  // If a base table wasn't specified, attempt to read it from the query if
+  // available, look for a table in the query's tables array that matches the
+  // base table of the given entity type, or just default to the first table.
+  if (!isset($base_table) && !$base_table = $query->getMetaData('base_table')) {
+    // Initialize the base table to the first table in the array. If a table can
+    // not be found that matches the entity type's base table, this will result
+    // in an invalid query if the first table is not the table we expect,
+    // forcing the caller to actually properly pass a base table in that case.
+    $tables = $query->getTables();
+    reset($tables);
+    $base_table = key($tables);
+
+    foreach ($tables as $table_info) {
+      if (!($table_info instanceof SelectQueryInterface)) {
+        // If this table matches the entity type's base table, use its table
+        // alias as the base table for the purposes of bundle and ownership
+        // access checks.
+        if ($table_info['table'] == $entity_info['base table']) {
+          $base_table = $table_info['alias'];
+        }
+      }
+    }
+  }
+
+  // Prepare an OR container for conditions. Conditions will be added that seek
+  // to grant access, meaning any particular type of permission check may grant
+  // access even if none of the others apply. At the end of this function, if no
+  // conditions have been added to the array, a condition will be added that
+  // always returns FALSE (1 = 0).
+  $conditions = db_or();
+
+  // Perform bundle specific permission checks for the specified entity type.
+  // In the event that the user has permission to view every bundle of the given
+  // entity type, $really_restricted will remain FALSE, indicating that it is
+  // safe to exit this function without applying any additional conditions. If
+  // the user only had such permission for a subset of the defined bundles,
+  // conditions representing those access checks would still be added.
+  $really_restricted = FALSE;
+
+  // Loop over every possible bundle for the given entity type.
+  foreach ($entity_info['bundles'] as $bundle_name => $bundle_info) {
+    // If the user has access to view entities of the current bundle...
+    if (user_access('view any ' . $entity_type . ' entity of bundle ' . $bundle_name, $account)) {
+      // Add a condition granting access if the entity specified by the view
+      // query is of the same bundle.
+      $conditions->condition($base_table . '.' . $entity_info['entity keys']['bundle'], $bundle_name);
+    }
+    elseif ($account->uid && !empty($entity_info['access arguments']['user key']) && user_access('view own ' . $entity_type . ' entities of bundle ' . $bundle_name, $account)) {
+      // Otherwise if an authenticated user has access to view his own entities
+      // of the current bundle and the given entity type has a user ownership key...
+      $really_restricted = TRUE;
+
+      // Add an AND condition group that grants access if the entity specified
+      // by the view query matches the same bundle and belongs to the user.
+      $conditions->condition(db_and()
+        ->condition($base_table . '.' . $entity_info['entity keys']['bundle'], $bundle_name)
+        ->condition($base_table . '.' . $entity_info['access arguments']['user key'], $account->uid)
+      );
+    }
+    else {
+      $really_restricted = TRUE;
+    }
+  }
+
+  // No further conditions need to be added to the query if we determined above
+  // that the user has an administrative view permission for any entity of the
+  // type and bundles represented by the query.
+  if (!$really_restricted) {
+    return;
+  }
+
+  // If the given entity type has a user ownership key...
+  if (!empty($entity_info['access arguments']['user key'])) {
+    // Perform 'view own' access control for the entity in the query if the user
+    // is authenticated.
+    if ($account->uid && user_access('view own ' . $entity_type . ' entities', $account)) {
+      $conditions->condition($base_table . '.' . $entity_info['access arguments']['user key'], $account->uid);
+    }
+  }
+
+  // Prepare an array of condition alter hooks to invoke and an array of context
+  // data for the current query.
+  $hooks = array(
+    'pagebuilder_entity_access_condition_' . $entity_type,
+    'pagebuilder_entity_access_condition'
+  );
+
+  $context = array(
+    'account' => $account,
+    'entity_type' => $entity_type,
+    'base_table' => $base_table
+  );
+
+  // Allow other modules to add conditions to the array as necessary.
+  drupal_alter($hooks, $conditions, $context);
+
+  // If we have more than one condition based on the entity access permissions
+  // and any hook implementations...
+  if (count($conditions)) {
+    // Add the conditions to the query.
+    $query->condition($conditions);
+  }
+  else {
+    // Otherwise, since we don't have any possible conditions to match against,
+    // we falsify this query. View checks are access grants, not access denials.
+    $query->where('1 = 0');
+  }
+}
+
+/**
+ * Implements hook_views_api().
+ */
+function pagebuilder_views_api() {
+  return array(
+    'api' => '3.0',
+    'path' => drupal_get_path('module', 'pagebuilder') . '/views',
+  );
+}
+
+/**
+ * Implements hook_field_extra_fields().
+ *
+ * Add the entity properties to the display and manage fields screens.
+ */
+function pagebuilder_field_extra_fields() {
+  $extra = array();
+  $entity_type = 'tier';
+  $property_info = entity_get_property_info($entity_type);
+  // dpm($property_info, 'Property info');
+
+  // Set the form and display options for each node type
+  foreach (node_type_get_names() as $type => $name) {
+    if (variable_get('pagebuilder_'. $type, NULL)) {
+      $extra['node'][$type] = array(
+        // Node forms
+        'form'    => array(
+          'pagebuilder' => array(
+            'label'       => t('Page builder create'),
+            'description' => t('Inline form elements for page builder tiers'),
+            // 'edit'        => 'What does this do?', // Oh.. this is cute
+            'weight'      => 15,
+          ),
+        ),
+        
+        // Node displays
+        'display' => array(
+          'pagebuilder_tier_admin_create' => array(
+            'label'       => t('Page builder create menu'),
+            'description' => t('Menu for content administrator to add a new tier of each enabled type from this display of the node'),
+            'weight'      => -5,
+          ),
+          'pagebuilder_tiers' => array(
+            'label' => t('Pagebuilder tiers'),
+            'description' => t('Custom tiers (usually rows) from the pagebuilder module.'),
+            'weight' => 5,
+          ),
+        ),
+      );
+    }
+  }
+
+  return $extra;
+}
+
+/** 
+ * Implements hook_field_attach_form()
+ * 
+ * Provides form elements to pagebuilder_create elements on the node edit
+ * form
+ */
+function pagebuilder_field_attach_form($entity_type, $entity, &$form, &$form_state) {
+  // Check if there's been a field added 
+  if (!isset($form['pagebuilder'])) {
+    return;
+  }
+  else {
+    $form['pagebuilder'] = drupal_get_form('pagebuilder_tier_sort_form', $entity);
+    // @TODO: Clearly I need to research this a bit. Add the sort form
+    //        to the node edit form.
+    // $form['pagebuilder']['form'] = drupal_get_form('pagebuilder_tier_sort_form', $entity);
+    // dpm($form, 'The form this field attachment is gonna happen on');
+  }
+  // dpm($entity_type, 'The entity type');
+  // dpm($entity, 'The entity the form is being built for');
+}
+
+/**
+ * Fetch all tiers by node-id
+ *
+ * @param $node_id
+ *           An integer value representing an entity ID parent
+ *
+ * @return $result
+ *           An array of tiers
+ */
+function pagebuilder_fetch_tiers_by_parentnid($node_id) {
+  $query = new EntityFieldQuery();
+
+  $query->entityCondition('entity_type', 'tier')
+        ->propertyCondition('parent_nid', $node_id, '=')
+        // ->propertyCondition('row_position', 0, '!=') // AE: This does nothing to the result :(
+        ->propertyOrderBy('row_position', $direction = 'ASC');
+
+  // dpm($query);
+  // return $query;
+
+  $result = $query->execute();
+
+  if (!empty($result)) {
+    $result = reset($result);
+  }
+  // dpm($result, 'The fetched tiers');
+
+  return $result;
+}
+
+/**
+ * Implements hook_theme()
+ *
+ * Suggest the default templates for tiers in this module
+ */
+function pagebuilder_theme($existing, $type, $theme, $path) {
+  $theme = array();
+
+  $theme['tier'] = array(
+    'render element' => 'content',
+    'base hook'      => 'tier',
+    'template'       => 'tier',
+    'path'           => drupal_get_path('module', 'pagebuilder') . '/templates',
+  );
+
+  $theme['tier__row'] = array(
+    'render element' => 'content',
+    'base hook'      => 'tier',
+    'template'       => 'tier--row',
+    'path'           => drupal_get_path('module', 'pagebuilder') . '/templates',
+  );
+
+  $theme['tier__column'] = array(
+    'render element' => 'content',
+    'base hook'      => 'tier',
+    'template'       => 'tier--column',
+    'path'           => drupal_get_path('module', 'pagebuilder') . '/templates',
+  );
+
+  $theme['pagebuilder_tier_sort_form'] = array(
+    'base hook'      => 'form',
+    'render element' => 'form',
+  );
+
+  // Tabledrag form
+  // $theme['pagebuilder_tier_sort_form'] = array(
+  //   'render element' => 'form',
+  // );
+
+  return $theme;
+}

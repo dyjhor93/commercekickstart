@@ -1,0 +1,17 @@
+name = Page builder
+description = Extends nodes to have multiple content tiers (a.k.a rows) of tier content (of different types). This is the basic framework that creates the entity type (tier).
+core = 7.x
+package = Page builder
+
+dependencies[] = entity
+dependencies[] = xautoload (>= 7.x-5.0)
+dependencies[] = block
+dependencies[] = features
+dependencies[] = field_group
+
+stylesheets[all][] = stylesheets/pagebuilder.css
+; Information added by Drupal.org packaging script on 2019-03-18
+version = "7.x-1.0"
+core = "7.x"
+project = "pagebuilder"
+datestamp = "1552895587"

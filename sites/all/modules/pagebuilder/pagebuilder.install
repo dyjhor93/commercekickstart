@@ -1,0 +1,141 @@
+<?php
+
+/**
+ * @file
+ * Install, update and uninstall functions for the pagebuilder module.
+ */
+
+/**
+ * Implements hook_schema().
+ */
+function pagebuilder_schema() {
+  $schema = array();
+
+  $schema['tier'] = array(
+    'description' => 'The base table for tiers',
+    'fields' => array(
+      'tier_id' => array(
+        'description' => 'Primary Key: Identifier for a tier instance (item).',
+        'type' => 'serial',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+      ),
+      'type' => array(
+        'description' => 'The {myentity}.type of this Tier.',
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => TRUE,
+        'default' => '',
+      ),
+      'title' => array(
+        'description' => 'The title of the Tier.',
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => FALSE,
+        'default' => '',
+      ),
+      'uid' => array(
+        'description' => 'ID of Drupal user creator.',
+        'type' => 'int',
+        'not null' => TRUE,
+      ),
+      'created' => array(
+        'description' => 'The Unix timestamp when the Tier was created.',
+        'type' => 'int',
+        'not null' => TRUE,
+        'default' => 0,
+      ),
+      'changed' => array(
+        'description' => 'The Unix timestamp when the Tier was modified.',
+        'type' => 'int',
+        'not null' => TRUE,
+        'default' => 0,
+      ),
+      //'description' => array(
+      //  'description' => 'The Tier description.',
+      //  'type' => 'text',
+      //),
+      'parent_nid' => array(
+        'description' => 'The node ID reference this tier instance belongs to',
+        'type' => 'int',
+        'not null' => TRUE,
+        'default'  => 0,
+      ),
+      'row_position' => array(
+        'description' => 'The position this tier instance has in its parent node (usually a row number)',
+        'type'       => 'int',
+        'not null'   => TRUE,
+        'default'    => 0, // AE: I'm wondering if I should make this '1' ?
+      ),
+    ),
+    'primary key' => array('tier_id'),
+    'indexes' => array(
+      'type' => array('type'),
+    ),
+  );
+
+  $schema['tier_type'] = array(
+    'description' => 'Stores information about defined Tier types.',
+    'fields' => array(
+      'id' => array(
+        'type' => 'serial',
+        'not null' => TRUE,
+        'description' => 'Primary Key: Unique Tier type identifier.',
+      ),
+      'type' => array(
+        'description' => 'The machine-readable name of this Tier type.',
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => TRUE,
+      ),
+      'label' => array(
+        'description' => 'The human-readable name of this Tier type.',
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => TRUE,
+        'default' => '',
+      ),
+      'description' => array(
+        'description' => 'A brief description of this Tier type.',
+        'type' => 'text',
+        'not null' => TRUE,
+        'size' => 'medium',
+        'translatable' => TRUE,
+      ),
+      // Copying columns from entity_exportable_schema_fields.
+      // See https://www.drupal.org/node/1122812
+      'status' => array(
+        'type' => 'int',
+        'not null' => TRUE,
+        // Set the default to ENTITY_CUSTOM without using the constant as it is
+        // not safe to use it at this point.
+        'default' => 0x01,
+        'size' => 'tiny',
+        'description' => 'The exportable status of the entity.',
+      ),
+      'module' => array(
+        'description' => 'The name of the providing module if the entity has been defined in code.',
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => FALSE,
+      ),
+    ),
+    'primary key' => array('id'),
+    'unique keys' => array(
+      'type' => array('type'),
+    ),
+  );
+
+  return $schema;
+}
+
+/**
+ * Implements hook_uninstall
+ */
+function pagebuilder_uninstall() {
+  // We should delete variables and stuff and things.
+  db_delete('variable')
+    ->condition('name', db_like('pagebuilder_') . '%', 'LIKE')
+    ->execute();
+  cache_clear_all('variables', 'cache_bootstrap');
+}

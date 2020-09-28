@@ -1,0 +1,121 @@
+.tier-pullquote blockquote {
+  font-weight: 100;
+  font-size: 1.6rem;
+  line-height: 1.1em;
+  color: #888;
+  border: none;
+}
+
+.tier-paragraph-image {
+  margin: 0;
+}
+
+.tier-paragraph-image img {
+  margin: 0;
+  width: 100%;
+  height: auto;
+}
+
+
+
+.tier-paragraph-image figcaption {
+  font-weight: 100;
+  font-size: 0.9rem;
+  line-height: 1.4em;
+  color: #888;
+  border: none;
+  font-style: italic;
+  text-align: center;
+  padding: 0.5em;
+  border-bottom: 1px solid #dedede;
+}
+
+/**
+ * Desktop only
+ */
+@media screen and (min-width: 1025px) {
+  .tier-pullquote blockquote {
+    width: 30%;
+  }
+  
+  .tier-pullquote-odd blockquote {
+    float: right;
+    margin: 0 0 1rem 1rem;
+    padding: 0 0 1rem 1rem;
+    border-left: 1px solid #ddd;
+  }
+  
+  .tier-pullquote-even blockquote {
+    float: left;
+    margin: 0 1rem 1rem 0;
+    padding: 0 1rem 1rem 0;
+    border-right: 1px solid #ddd;
+    text-align: right;
+  }
+  
+  .tier-paragraph-image-odd {
+    width: 49%;
+    float: right;
+    margin: 0 0 1rem 1rem;
+  }
+  
+  .tier-paragraph-image-even {
+    width: 49%;
+    float: left;
+    margin: 0 1rem 1rem 0;
+  }
+}
+
+/**
+ * Medium responses
+ */
+@media screen and (max-width: 1024px) and (min-width: 521px) {
+  .tier-pullquote blockquote {
+    width: 40%;
+  }
+  
+  .tier-pullquote-odd blockquote {
+    float: right;
+    margin: 0 0 1rem 1rem;
+    padding: 0 0 1rem 1rem;
+    border-left: 1px solid #ddd;
+    
+  }
+  
+  .tier-pullquote-even blockquote {
+    float: left;
+    margin: 0 1rem 1rem 0;
+    padding: 0 1rem 1rem 0;
+    border-right: 1px solid #ddd;
+    text-align: right;
+  }
+  
+  .tier-paragraph-image-odd {
+    width: 49%;
+    float: right;
+    margin: 0 0 1rem 1rem;
+  }
+  
+  .tier-paragraph-image-even {
+    width: 49%;
+    float: left;
+    margin: 0 1rem 1rem 0;
+  }
+}
+
+/**
+ * Small responses
+ */
+@media screen and (max-width: 520px) {
+  .tier-pullquote blockquote {
+    margin: 1rem;
+    padding: 1rem;
+    text-align: center;
+    display: none;
+  }
+  
+  .tier-paragraph-image {
+    margin: 0 0 1em 0;
+    width: 100%;
+  }
+}

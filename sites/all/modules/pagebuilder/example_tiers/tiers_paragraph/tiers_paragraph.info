@@ -1,0 +1,36 @@
+name = Tiers: Paragraph (Tiers demo)
+description = A formatted paragraph tier type to extend the Page builder module
+core = 7.x
+package = Page builder
+version = 7.x-0.1
+dependencies[] = conditional_fields
+dependencies[] = entity
+dependencies[] = features
+dependencies[] = field_group
+dependencies[] = image
+dependencies[] = list
+dependencies[] = pagebuilder
+dependencies[] = text
+dependencies[] = file_entity
+features[conditional_fields][] = tier:rw_pagemanager_tiers_paragraph
+features[ctools][] = field_group:field_group:1
+features[features_api][] = api:2
+features[field_base][] = field_enable_image
+features[field_base][] = field_enable_pullquote
+features[field_base][] = field_quote
+features[field_base][] = field_tier_image
+features[field_base][] = field_tier_paragraph
+features[field_group][] = group_advanced|tier|rw_pagemanager_tiers_paragraph|form
+features[field_instance][] = tier-rw_pagemanager_tiers_paragraph-field_enable_image
+features[field_instance][] = tier-rw_pagemanager_tiers_paragraph-field_enable_pullquote
+features[field_instance][] = tier-rw_pagemanager_tiers_paragraph-field_quote
+features[field_instance][] = tier-rw_pagemanager_tiers_paragraph-field_tier_image
+features[field_instance][] = tier-rw_pagemanager_tiers_paragraph-field_tier_paragraph
+features[tier_type][] = rw_pagemanager_tiers_paragraph
+stylesheets[all][] = stylesheets/tiers_paragraph.css
+
+; Information added by Drupal.org packaging script on 2019-03-18
+version = "7.x-1.0"
+core = "7.x"
+project = "pagebuilder"
+datestamp = "1552895587"

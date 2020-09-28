@@ -56,12 +56,13 @@ body {
         width:60px;
         bottom:50%;
         right:0px;
-        background-color:#000000;
+        background-color: #000;
         color:#FFF;
         text-align: center;
         font-size:30px;
-        box-shadow: 2px 2px 3px #999;
+        box-shadow: 0px 0px 0px 1px #999;
         z-index:100;
+        border-radius: 3px;
     }
 
     .float:hover {
@@ -70,8 +71,26 @@ body {
         background-color:#fff;
     }
 
-    .red-facebook {background-image: url('img/facebook.png')  ;}
-
+    .icon-social{
+        background-size: 60px 45px;
+        background-repeat: no-repeat;
+    }
+    .red-facebook {
+        background-image: url('https://img.icons8.com/color/2x/facebook.png');
+    }
+    .red-instagram {
+        background-image: url('https://img.icons8.com/color/72/instagram-new.png');
+    }
+    .red-facebook>div>a, .red-instagram>div>a{
+        padding: 30px;
+        font: 0/0 a;
+    }
+    .texto-oculto{
+        font: 0/0 a;
+        text-shadow: transparent;
+        /*color: transparent;
+        text-decoration: none;*/
+    }
     .my-float{
         margin-top:16px;
     }
@@ -840,4 +859,19 @@ body.toolbar #toolbar div.toolbar-menu, #toolbar{
 }
 #toolbar-home{
     display: none;
+}
+
+/*****vive sano*****/
+
+li.views-row.views-row-1 {
+    display: flex;
+    max-width: 100%;
+}
+.view-come-sano .views-row img {
+    width:100%;
+    height:auto;
+
+}
+.view-come-sano .views-row .field-content {
+ margin:15px;
 }

@@ -1,0 +1,145 @@
+<?php
+/**
+ * @file
+ * Code for the Tiers: Paragraph (Tiers demo) feature.
+ *
+ * Created by André Ellis (http://uberellis.com)
+ * for Rogerwilco (http://rogerwilco.co.za) as part of the Tiger Brands multidomain site
+ * Jun 17, 2016.
+ */
+
+include_once 'tiers_paragraph.features.inc';
+
+/**
+ * Implements hook_form_alter()
+ * Alter the "Title/Name" field for a paragraph tier
+ */
+function tiers_paragraph_form_alter(&$form, &$form_state, $form_id) {
+  if ($form_id == 'rw_pagemanager_tiers_paragraph_tier_form' || $form_id == 'tier_edit_rw_pagemanager_tiers_paragraph_form') {
+    // First off, we want to change the label for the name field
+    $form['title']['#title']       = t('Sub-heading');
+    $form['title']['#description'] = t('Optional: Add a heading to this paragraph. Leave blank for no sub-heading');
+    $form['title']['#attributes']  = array(
+      'placeholder'                => t('E.g. Sub-section B'),
+    );
+
+    
+
+    // dpm($form, 'The paragraph tier edit form');
+  }
+  // dpm($form_id, 'The form ID');
+}
+
+// Alter image Title for field_top_image instance
+function tiers_paragraph_field_widget_form_alter(&$element, &$form_state, $context) {
+  // If this is an image field type of instance 'field_image_top'
+  if ($context['field']['field_name'] == 'field_tier_image') {
+    // Loop through the element children (there will always be at least one).
+    foreach (element_children($element) as $key => $child) {
+      // Add the new process function to the element
+      //dpm($element);
+      $element[$key]['#process'][] = 'tiers_paragraph_image_field_widget_process';
+    }
+  }
+}
+
+
+/**
+ * Implement hook_image_field_widget_process()
+ * Change the "Title" field of the image field to read "Caption"
+ */
+function tiers_paragraph_image_field_widget_process($element, &$form_state, $form) {
+  // Change the title field label and description
+  //dpm($element);
+  $element['title']['#title'] = t('Caption');
+  $element['title']['#description'] = t('Optional: Add a caption (leave blank for no caption)');
+
+  // Return the altered element
+  return $element;
+}
+
+
+/**
+ * Implements hook_entity_view()
+ *
+ * Check whether or not to add a pullquote or any of the other future advanced
+ * features
+ */
+function tiers_paragraph_entity_view($entity, $type, $view_mode, $langcode) {
+  if ($type == 'tier' && $entity->type == 'rw_pagemanager_tiers_paragraph') {
+    // Is there an enabled Pullquote?
+    // AE: This is probably going to break things on paragraph tiers created before this addition
+    if ($entity->field_enable_pullquote[LANGUAGE_NONE][0]['value'] == '1') {
+      // @TODO: Add options to render the pullquote on the left or the right
+      // AE: On second thought, let's make it pseudo-dynamic based on row number ;)
+      ($entity->row_position % 2 == 0) ? $delta = 'even' : $delta = 'odd';
+      $quote = '<aside class="tier-pullquote tier-pullquote-' . $delta . '" role="pullquote"><blockquote>' . $entity->field_quote[LANGUAGE_NONE][0]['safe_value'] . '</blockquote></aside>';
+      // AE: Wonder if it's better to style this as a suffix
+      $entity->content['field_tier_paragraph']['#prefix'] = $quote;
+    }
+    
+    // Is there an enabled Image?
+    // AE: This is probably going to break things on paragraph tiers created before this
+    //     addition - also made conditional fields to dissallow pullquotes and images on
+    //     the same paragraph tier.
+    if ($entity->field_enable_image[LANGUAGE_NONE][0]['value'] == '1') {
+      // @TODO: Add options to render the image on the left or the right
+      // AE: On second thought, let's make it pseudo-dynamic based on row number ;)
+      ($entity->row_position % 2 == 0) ? $delta = 'even' : $delta = 'odd';
+
+      $image = '<figure class="tier-paragraph-image tier-paragraph-image-' . $delta . '">' . "\n";
+
+      $options = array(
+        'style_name'   => 'paragraph_embedded',
+        'path'         => $entity->field_tier_image[LANGUAGE_NONE][0]['uri'],
+        'width'        => $entity->field_tier_image[LANGUAGE_NONE][0]['metadata']['width'],
+        'height'       => $entity->field_tier_image[LANGUAGE_NONE][0]['metadata']['height'],
+        'alt'          => $entity->field_tier_image[LANGUAGE_NONE][0]['alt'],
+        'title'        => $entity->field_tier_image[LANGUAGE_NONE][0]['title'],
+        'attributes'   => array(),
+      );
+
+      $image .= theme_image_style($options);
+      
+      if ($options['title'] != '') {
+        $image .= '<figcaption>' . $options['title'] . '</figcaption>' . "\n";
+      }
+
+      $image .= '</figure>';
+      // AE: Wonder if it's better to style this as a suffix
+      $entity->content['field_tier_paragraph']['#prefix'] = $image;
+    }
+    
+    // dpm($entity, 'The tier');
+  }
+}
+
+/**
+ * Implements hook_default_styles()
+ *
+ * Create some default style names we can use for embedded images
+ * This added from  tutorial found here: 
+ *   https://www.webomelette.com/declaring-image-styles-drupal-hook
+ */
+function tiers_paragraph_image_default_styles() {
+  $styles = array();
+ 
+  $styles['paragraph_embedded'] = array(
+    'label' => 'Formatted paragraph embedded image',
+    'effects' => array(
+      4 => array(
+        'name' => 'image_scale',
+        'data' => array(
+          'width' => 600,
+          'height' => '',
+          'upscale' => 1,
+        ),
+        'weight' => 1,
+      ),
+    ),
+    'name' => 'paragraph_embedded', // You need this and the next line to avoid PHP notices
+    'storage' => IMAGE_STORAGE_NORMAL,
+  );
+ 
+  return $styles;
+}
