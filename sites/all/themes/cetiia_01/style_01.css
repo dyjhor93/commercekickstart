@@ -1,45 +1,31 @@
+
 @import url(//db.onlinewebfonts.com/c/e55e9079ee863276569c8a68d776ef04?family=Futura+Bk+BT);
+
 body {
     background-color: #f6ebe2;
     font-family: Futura Bk BT !important;
+    font-size: 1.1em !important;
 }
+
+
+
+/* ESCONDER TITULO DE BIENVENIDA */
+
+h1#page-title {
+    display: none;
+}
+
+
+
+
+/* ESTILOS GLOBALES */
 
 .text-center{
     text-align: center !important;
 }
 
-
-@media only screen and (max-width: 1024px) {
-   
-    /* aqui el codigo para responsive*/
-
-    .redes-sociales {
-        background-color:#ffffff;
-        color:#FFF;
-        border-radius:15px;
-        text-align: center;
-        font-size:30px;
-        box-shadow: 2px 2px 3px #999;
-        z-index:100;
-        justify-content: center;
-    }
-   
-
-
-    /* CENTRAR CONTENEDOR TEXT SOBRE NOSOTROS */
-    .views-field.views-field-field-link-sobre-nosotros {
-        width: 100% !important;
-    }
-
-  
-    /* CENTRAR CONTENEDOR TEXT COME SANO */
-    .views-row.views-row-1 {display: grid !important;}
-
-
-    /* CENTRAR EN DISEÑO RESPONSIVO PARA EL DIV TEXT - COME SANO */
-    .view-come-sano .views-row .field-content {
-        text-align: center;
-    }
+.zone-preface {
+    padding: 0px !important;
 }
 
 
@@ -47,121 +33,21 @@ body {
 
 
 
-@media only screen and (min-width: 1024px) {
-   
-    /* Redes Sociales Flotante */
-    
-    .redes-sociales {
-        position:fixed;
-        width:60px;
-        bottom:50%;
-        right:0px;
-        background-color: #000;
-        color:#FFF;
-        text-align: center;
-        font-size:30px;
-        box-shadow: 0px 0px 0px 1px #999;
-        z-index:100;
-        border-radius: 3px;
-    }
 
-    .float:hover {
-        text-decoration: none;
-        color: #25d366;
-        background-color:#fff;
-    }
-
-    .icon-social{
-        background-size: 60px 45px;
-        background-repeat: no-repeat;
-    }
-    .red-facebook {
-        background-image: url('https://img.icons8.com/color/2x/facebook.png');
-    }
-    .red-instagram {
-        background-image: url('https://img.icons8.com/color/72/instagram-new.png');
-    }
-    .red-facebook>div>a, .red-instagram>div>a{
-        padding: 30px;
-        font: 0/0 a;
-    }
-    .texto-oculto{
-        font: 0/0 a;
-        text-shadow: transparent;
-        /*color: transparent;
-        text-decoration: none;*/
-    }
-    .my-float{
-        margin-top:16px;
-    }
-
-     
-    /* PARA CONTACTEMOS */
-    .donde-encontrarnos {
-        display: flex;
-    }
+/*BARRA DE NAVEGACIÓN*/
 
 
+    /* BARRA NAVEGACION DISEÑO RESPONSIVE - ESCONDE Y SACA MENU */
+
+    @media only screen and (min-width: 980px){
         
-    /*  PRINCIPAL SOBRE NOSOTROS  */
-
-
-    .views-row.views-row-1.views-row-odd.views-row-first.views-row-last.grid-24.lado-lado {
-        display: flex;
-    }
-    
-
-    .parrafo-delmes {
-        background-color: #F3D5CE;
-        width: 50%;
-        padding: 35px;
-        display: flex;
-        align-items: center;
-    }
-    
-    .views-field.views-field-field-image-sobre-nosotros {
-        width: 50%;
-    }
-
-    .views-field.views-field-field-link-sobre-nosotros {
-        display: flex;
-    }
-
-
-    .field-content.sobre-nos {
-        /*display: flex;*/
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-    }
-
-
-    .imagen-delmes {
-        width: 50%;
-        padding: 0px;
-        display: flex;
-        align-items: center;
-    }
-
-
-    
-}
-
-
-/* BARRA NAVEGACION DISEÑO RESPONSIVE - ESCONDE Y SACA MENU */
-
-@media only screen and (min-width: 980px){
-    
-    .navigation {
-        background-color: #f6ebe2 !important;
-        text-align: center !important;
-        display: flex !important;
-        justify-content: center !important;
+        .navigation {
+            background-color: #f6ebe2 !important;
+            text-align: center !important;
+            display: flex !important;
+            justify-content: center !important;
         }
-}
-
-
-/* *BARRA DE NAVEGACIÓN*/
+    }
 
     /* Logo */
     #logo{
@@ -174,7 +60,7 @@ body {
         background-color: #f6ebe2 !important;
         text-align: center !important;
         justify-content: center !important;
-        }
+    }
 
     .toggle-help {
         display: none;
@@ -182,6 +68,12 @@ body {
 
     .primary-menu > h2 {
         display: none;
+    }
+
+    /*  carrito de compras */
+    .block-shopping-cart-block .content {
+        background-color: #f6ebe2 !important;
+        background-image: url(https://www.flaticon.es/svg/static/icons/svg/1007/1007957.svg) !important;
     }
 
 #region-menu {
@@ -194,12 +86,10 @@ body {
     border: none;
 }
 
-
 #zone-branding {
     display: flex;
     justify-content: center;
 }
-
 
 #region-user-first {
     display: flex;
@@ -209,12 +99,9 @@ body {
 }
 
 
-/*   *carrito de compras */
 
-.block-shopping-cart-block .content {
-    background-color: #f6ebe2 !important;
-    background-image: url(https://www.flaticon.es/svg/static/icons/svg/1007/1007957.svg) !important;
-}
+
+
 
 /* ZONA USUARIO */
 
@@ -228,6 +115,10 @@ body {
     font-size: 1em;
 
 }
+
+
+
+
 
 
 /* *BANER DESCUENTO PRIMERA COMPRA*/
@@ -247,7 +138,13 @@ body {
     background: #ffffff;
 }
 
-/* BLOQUE SLIDER COME SANO VIVE SANO*/
+
+
+
+
+
+
+/* BLOQUE COME SANO VIVE SANO*/
 
     /*  BOTON ABAJO IMAGEN COME SANO VIVE SANO  */
 
@@ -269,11 +166,27 @@ body {
 }
 
 
+
+
+
+
+
+
 /* VISTA PORTAFOLIO */
 
 .field-label-hidden {
     text-align: center;
 }
+
+.text-portafolio{
+    background-color: #fff;
+    margin: 0% 8% !important;
+    padding: 1%;
+}
+
+
+
+
 
 
 /* VISTA PRODUCTOS MARKET PLACE  */
@@ -295,56 +208,7 @@ body {
     border-radius: 20px;
 }
 
-
-
-/*  FOOTER */
-
-#region-footer-second {
-    background: #ffffff;
-}
-
-
-#zone-footer-wrapper {
-    background-color: #f6ebe2;
-}
-
-#block-menu-menu-social-connection .content ul.menu li a.pinterest {
-    background-image: url(https://www.flaticon.es/svg/static/icons/svg/733/733622.svg) !important;
-    
-}
-
-#block-menu-menu-social-connection .content ul.menu li a.facebook {
-    background-image: url(https://www.flaticon.es/svg/static/icons/svg/20/20837.svg) !important;
-}
-
-#block-menu-menu-social-connection .content ul.menu li a.twitter {
-    background-image: url(https://www.flaticon.es/svg/static/icons/svg/733/733614.svg) !important;
-}
-
-/* SEPARAR BLOQUES UNO BAJO OTRO EN PAGINA PRINCIPAL*/
-
-
-#block-views-visitamarketplace-block {
-    margin-top: 40px;
-    text-align: center;
-}
-
-#block-views-sobre-nosotros-block {
-    margin-top: 40px;
-    text-align: center;
-    
-}
-
-#block-views-producto-del-mes-block {
-    margin-top: 40px;
-    text-align: center;
-}
-
-#block-views-portafolio-block {
-    margin-top: 40px;
-    text-align: center;
-}
-
+   
 
 
 /* PRINCIPAL  VISITA MARKET PLACE */
@@ -360,6 +224,11 @@ body {
 }
 
 
+
+
+
+/* BANNER DE MARKET PLACE - TEXTO SOBRE IMAGEN */
+
 @media only screen and (min-width: 1000px) {
     
     .texto-sobre{
@@ -371,6 +240,7 @@ body {
         font-size: 1em !important; 
     } 
 }
+
 
 
 
@@ -388,24 +258,6 @@ body {
         height: 8.5em !important;
     }
 
-    .a4.x > a, .webform-submit.button-primary.form-submit{
-        cursor: pointer;
-        border: 1px solid #6D85A8;
-        border-radius: 1px;
-        color: #6D85A8;
-        font-size: 0.8em;
-        line-height: inherit;
-        padding: 2% 5% !important;
-        text-transform: uppercase;
-        transition: all 0.25s ease 0s;
-      }
-      
-      .a4.x:hover,
-      .a4.x:active,
-      .a4.x:focus {
-          border-color: #299FFF;
-          color: #299FFF;
-      }
 }
 
 
@@ -436,6 +288,12 @@ body {
 #edit-pass {
     background: #e0e0e0 !important;
 }
+
+
+
+
+
+
 
 /* Zona preface*/
 .zone-preface{
@@ -511,15 +369,7 @@ iframe{
 
 
 
-
-
-
-
-
-
-
-
-
+/*  SOBRE NOSOTROS */
 
 
 .views-field.views-field-field-link-sobre-nosotros {
@@ -539,48 +389,10 @@ iframe{
 
 
 
+/* PRINCIPAL CAROUSEL */
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-/* PRINCIPAL CROUSEL */
 .jcarrousel-custom{
-    background-color: #FEFFFF;
+    background-color: rgba(255, 255, 255,0.6);
 }
 
     /*  ESTE SE HACE PARA EL RESPONSIVE DEL CAROUSEL  */ 
@@ -591,7 +403,6 @@ iframe{
         .jcarrousel-custom{
             width: 60%;
             margin: auto;
-            margin-top: 30px;
         }
     }
 
@@ -602,10 +413,43 @@ iframe{
         .jcarrousel-custom{
             width: 80%;
             margin: auto;
-            margin-top: 30px;
         }
     }
 
+.node-title {
+    text-align: center;
+    font-family: Futura Bk BT !important;
+    color: #000000 !important;
+}
+
+
+    /* PARA TITULO CAROUSEL*/
+    .front .node h2 a {
+        color: #000000 !important;
+        font-size: 1.3em;
+    }
+
+.field-item.even > p {
+    margin-top: 20px !important;
+    font-family: Futura Bk BT !important;
+    width: 50%;
+    margin: auto;
+}
+
+.view-header > P {
+    text-align: center;
+}
+
+.view-header > P > a {
+    background-color: #ebbeb7;
+    cursor: pointer;
+    border: 1px solid #000000;
+    color: #000000;
+    font-size: 16px;
+    line-height: inherit;
+    padding: 1% 3% !important;
+    transition: all 0.25s ease 0s;
+}
 
 
 table, th, td {
@@ -614,6 +458,38 @@ table, th, td {
 .clase-grupo-texto{
     background-color: yellow !important;
 }
+
+
+    /* CONTE PRODUCTO CAROUSEL */
+    .jcarousel-skin-default .jcarousel-item {
+        width: 200px;
+        height: auto;
+        border: none;
+    }
+
+
+    /* FLECHAS DEL CAROUSEL */
+    .jcarousel-skin-default .jcarousel-prev-horizontal {
+        top: 40% !important;
+    }
+
+    .jcarousel-skin-default .jcarousel-next-horizontal {
+        top: 40% !important;
+    }
+
+
+/* ALTO ESPACIO DEL CAROUSEL */
+.jcarousel-skin-default .jcarousel-container-horizontal  {
+    height: auto;
+}
+
+
+/* quitar borde a descripcion y precio  */
+ .views-field-title-field, .views-field.views-field-commerce-price {
+     border: none !important;
+ }
+
+
 
 
 
@@ -627,6 +503,11 @@ table, th, td {
     min-width: 0 !important;
     background-color: white;
 }
+
+
+
+
+
 
 
 /* PARA CONTACTENOS */
@@ -649,7 +530,6 @@ textarea {
 
 .block-title {font-size: 2em !important;
     text-align: center;
-    margin-top: 20px !important;
 }
 
 .field-content.text-bold {
@@ -657,6 +537,10 @@ textarea {
     text-align: center;
     margin-top: 20px !important;
 }
+
+
+
+
 
 
 
@@ -671,7 +555,11 @@ textarea {
 
 
 
-/* SE HACE PARA EL FOOTER 2 */
+
+
+
+
+/* SE HACE PARA EL FOOTER 2  - DISEÑO RESPONSIVE*/
 @media only screen and (min-width: 800px) {
     
     #zone-footer2 {
@@ -682,40 +570,57 @@ textarea {
 }
 
 
+
+
+
+
+
 /* ESTILOS BOTON */
 
 .a4.x{
     margin: 4% 0%;
-    
 }
+
 .a4.x > a, .webform-submit.button-primary.form-submit{
     cursor: pointer;
-    border: 1px solid #6D85A8;
-    border-radius: 3px;
-    color: #6D85A8;
+    border: 1px solid #000000;
+    color: #000000;
     font-size: 16px;
     line-height: inherit;
-    padding: 2% 5% !important;
-    text-transform: uppercase;
+    padding: 1% 3% !important;
     transition: all 0.25s ease 0s;
-  }
-  
-  .button:hover,
-  .button:active,
-  .button:focus {
-      border-color: #299FFF;
-      color: #299FFF;
-  }
+}
 
 
-  /* ALINEAS PORTAFOLIO Y CENTRARLO EN SU CONTENEDOR */
+.form-actions > input {
+    width: 100%;
+}
 
-  #block-views-sobre-nosotros-block-1 .views-row {
-    /* display: flex; */
-    /* flex-grow: 3 !important; */
-    /* flex-shrink: 8 !important; */
-    margin-left: 10px !important;
-    margin-right: 10px !important; 
+input.webform-submit.button-primary.form-submit {
+    width: 100%;
+}
+
+/*para boton del footer*/
+
+input.webform-submit.button-primary.form-submit {
+    background: #000000;
+    color: #ffffff;
+    border-radius: 0px;
+}
+
+
+
+
+
+
+/* ALINEAS PORTAFOLIO Y CENTRARLO EN SU CONTENEDOR */
+
+#block-views-sobre-nosotros-block-1 .views-row {
+/* display: flex; */
+/* flex-grow: 3 !important; */
+/* flex-shrink: 8 !important; */
+margin-left: 10px !important;
+margin-right: 10px !important; 
 }
 
 
@@ -742,35 +647,12 @@ nav.navigation.clearfix {
     padding: 0;
     width: auto !important;
     min-width: 0 !important;
-    background-color: white;
   
 }
 
-/***id="block-views-sobre-nosotros-block-1 (PORTAFOLIO) **/
-
-div#region-postscript-third {
-    width: 100%;
-}
-
-#block-views-sobre-nosotros-block-1 .region-inner.region-menu-inner {display: flex;}
 
 
-#block-views-sobre-nosotros-block-1 .view-content {
-    width: 100%;
-    display: flex;
-    flex-flow: wrap;
-}
 
-#block-views-sobre-nosotros-block-1 .views-row {
-    /* display: flex; */
-    width: 100%;
-    flex: 4 2 0;
-    /* flex-grow: 3 !important; */
-    /* flex-shrink: 8 !important; */
-    margin: 0;
-    padding: 0;
-    min-width: 21% !important;
-}
 
 /*****vive sano*****/
 .view-come-sano .collapsible.group-grup-textcomesano.field-group-div.speed-fast.effect-none.fieldgroup-effects-processed {
@@ -799,6 +681,30 @@ div#region-postscript-third {
 }
 
 
+
+
+/*****vive sano*****/
+li.views-row.views-row-1 {
+    display: flex;
+    max-width: 100%;
+}
+.view-come-sano .views-row img {
+    width:100%;
+    height:auto;
+
+}
+.view-come-sano .views-row .field-content {
+ margin:15px;
+}
+
+
+
+
+
+
+
+
+
 /********.view-carrusel ***************/
 .view-carrusel .view-come-sano .content.clearfix {
     display: flex;
@@ -824,35 +730,55 @@ div#region-postscript-third {
     border-bottom: 0;
 
 }
+
 .form-text, .form-textarea{
     background-color: #fff !important;
     background: #fff !important;
-    }
-
-    .text-portafolio{
-        background-color: #fff;
-        margin: 8%;
-        padding: 1%;
-    }
+}
 
 
-/*****vive sano*****/
-li.views-row.views-row-1 {
+
+
+
+
+
+
+    
+
+/***id="block-views-sobre-nosotros-block-1 (PORTAFOLIO) **/
+
+div#region-postscript-third {
+    width: 100%;
+}
+
+#block-views-sobre-nosotros-block-1 .region-inner.region-menu-inner {display: flex;}
+
+
+#block-views-sobre-nosotros-block-1 .view-content {
+    width: 100%;
     display: flex;
-    max-width: 100%;
-}
-.view-come-sano .views-row img {
-    width:100%;
-    height:auto;
-
-}
-.view-come-sano .views-row .field-content {
- margin:15px;
+    flex-flow: wrap;
 }
 
+#block-views-sobre-nosotros-block-1 .views-row {
+    /* display: flex; */
+    width: 100%;
+    flex: 4 2 0;
+    /* flex-grow: 3 !important; */
+    /* flex-shrink: 8 !important; */
+    margin: 0;
+    padding: 0;
+    min-width: 21% !important;
+}
 
 
-/*Admin Dark*/
+
+
+
+
+
+
+/* ADMIN BARRA DESARROLLO DARK */
 body.toolbar #toolbar div.toolbar-menu, #toolbar{
     background-color: #000 !important;
     background: #000 !important;
@@ -861,17 +787,454 @@ body.toolbar #toolbar div.toolbar-menu, #toolbar{
     display: none;
 }
 
-/*****vive sano*****/
 
-li.views-row.views-row-1 {
+
+
+
+
+
+
+
+
+/* CODIGO RESPONSIVE - TODOS DISPOSITIVOS REDES SOCIALES */
+
+@media only screen and (max-width: 1024px) {
+
+    .redes-sociales {
+        margin: auto;
+        background-color:#000000;
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+
+    .social-buttons__button {
+        margin: 10px 5px 0;
+    }
+    
+    .social-button {
+        position: relative;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        outline: none;
+        width: 70px;
+        height: 70px;
+        text-decoration: none;
+    }
+
+    .social-button__inner {
+        position: relative;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: calc(100% - 2px);
+        height: calc(100% - 2px);
+        border-radius: 100%;
+        background: #fff;
+        text-align: center;
+    }
+
+    .social-button i,
+    .social-button svg {
+        position: relative;
+        z-index: 1;
+        transition: 0.3s;
+    }
+
+    .social-button i {
+        font-size: 28px;
+    }
+
+    .social-button svg {
+        height: 40%;
+        width: 40%;
+    }
+
+    .social-button::after {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 50%;
+        display: block;
+        width: 0;
+        height: 0;
+        border-radius: 100%;
+        transition: 0.3s;
+    }
+
+    .social-button:focus, .social-button:hover {
+        color: #fff!important;
+    }
+    
+    .social-button:focus::after, .social-button:hover::after {
+        width: 100%;
+        height: 100%;
+        margin-left: -50%;
+    }
+    
+    .social-button--facebook {
+        color: #3b5998 !important;
+    }
+
+    .social-button--facebook::after {
+        background: #3b5998;
+    }
+
+    .social-button--twitter {
+        color: #1da1f2 !important;
+    }
+
+    .social-button--twitter::after {
+        background: #1da1f2;
+    }
+
+    .social-button--pinterest{
+    color: #bd081c !important;
+    }
+
+    .social-button--pinterest::after {
+        background: #bd081c;
+    }
+
+    .social-button--youtube {
+    color: #ff0000 !important;
+    }
+
+    .social-button--youtube::after {
+        background: #ff0000;
+    }
+
+    .social-button--instagram {
+    color: #c13584 !important;
+    }
+
+    .social-button--instagram::after {
+        background: #c13584;
+    }
+
+}
+
+
+
+
+/* CODIGO REDES SOCIALES PANTALLA COMPLETA */
+
+    /* Redes Sociales Flotante */
+
+@media only screen and (min-width: 1024px) {
+
+    .redes-sociales {
+        position:fixed;
+        width:60px;
+        bottom:30%;
+        right:0px;
+        background-color: #000;
+        color:#FFF;
+        text-align: center;
+        font-size:30px;
+        box-shadow: 0px 0px 0px 1px #999;
+        z-index:100;
+        border-radius: 3px;
+    }
+
+    .float:hover {
+        text-decoration: none;
+        color: #25d366;
+        background-color:#fff;
+    }
+
+    .icon-social{
+        background-size: 60px 45px;
+        background-repeat: no-repeat;
+    }
+
+    .red-facebook {
+        background-image: url('img/facebook\ \(1\).png');
+    }
+
+    .red-instagram {
+        background-image: url('img/instagram.png');
+    }
+
+    .red-twitter {
+        background-image: url('img/twitter.png');
+    }
+
+    .red-linkedin {
+        background-image: url('img/linkedin.png');
+    }
+
+    .red-pinterest {
+        background-image: url('img/pinterest.png');
+    }
+
+    .red-whatsapp {
+        background-image: url('img/whatsapp\ \(1\).png');
+    }
+
+
+
+    .red-facebook>div>a, 
+    .red-instagram>div>a, 
+    .red-twitter>div>a, 
+    .red-linkedin>div>a, 
+    .red-pinterest>div>a, 
+    .red-whatsapp>div>a {
+        padding: 30px;
+        font: 0/0 a;
+    }
+
+    .texto-oculto{
+        font: 0/0 a;
+        text-shadow: transparent;
+        /*color: transparent;
+        text-decoration: none;*/
+    }
+
+    .my-float{
+        margin-top:16px;
+    }
+}
+
+
+
+
+
+
+
+/*  FOOTER 
+
+#region-footer-second {
+    background: #ffffff;
+}
+
+
+#zone-footer-wrapper {
+    background-color: #f6ebe2;
+}
+
+#block-menu-menu-social-connection .content ul.menu li a.pinterest {
+    background-image: url(https://www.flaticon.es/svg/static/icons/svg/733/733622.svg) !important;
+    
+}
+
+#block-menu-menu-social-connection .content ul.menu li a.facebook {
+    background-image: url(https://www.flaticon.es/svg/static/icons/svg/20/20837.svg) !important;
+}
+
+#block-menu-menu-social-connection .content ul.menu li a.twitter {
+    background-image: url(https://www.flaticon.es/svg/static/icons/svg/733/733614.svg) !important;
+}
+
+*/
+
+
+
+
+
+
+
+
+/* PRINCIPAL - SOBRE NOSOTROS */
+#block-views-sobre-nosotros-block {
+    text-align: left;
+}
+
+.views-field.views-field-field-image-sobre-nosotros {
     display: flex;
-    max-width: 100%;
+    justify-content: center;
 }
-.view-come-sano .views-row img {
-    width:100%;
-    height:auto;
+
+
+@media only screen and (max-width: 1024px){
+    #block-views-sobre-nosotros-block {
+        text-align: center;
+    }
+
+    .views-field.views-field-field-image-sobre-nosotros {
+        display: flex;
+        justify-content: center;
+        margin: auto;
+    }
 
 }
-.view-come-sano .views-row .field-content {
- margin:15px;
+
+
+
+
+
+
+
+
+
+
+/*  PRINCIPAL SOBRE NOSOTROS  */
+
+
+
+.views-field.views-field-field-image-sobre-nosotros {
+    width: 50%;
+}
+
+
+
+.conten-sobrenos > .view-content > .views-row.views-row-1.views-row-odd.views-row-first.views-row-last {
+    display: flex;
+}
+
+
+.views-field.views-field-field-image-sobre-nosotros > img {
+    width: 100%;
+}
+
+.views-field.views-field-field-link-sobre-nosotros {
+    display: flex;
+}
+
+.field-content.sobre-nos {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 40px;
+}
+
+.imagen-delmes {
+    width: 50%;
+    padding: 0px;
+    display: flex;
+    align-items: center;
+}
+
+
+@media only screen and (max-width: 1024px) {
+   
+
+    /* CENTRAR CONTENEDOR TEXT SOBRE NOSOTROS */
+    .views-field.views-field-field-link-sobre-nosotros {
+        width: 100% !important;
+    }
+
+    /* CENTRAR CONTENEDOR TEXT COME SANO */
+    .views-row.views-row-1 {display: grid !important;}
+
+    /* CENTRAR EN DISEÑO RESPONSIVO PARA EL DIV TEXT - COME SANO */
+    .view-come-sano .views-row .field-content {
+        text-align: center;
+    }
+}
+
+
+/*  TAMAÑOS PANTALLA COMPLETA */
+
+@media only screen and (min-width: 1024px) {
+   
+    /* PARA CONTACTEMOS */
+    .donde-encontrarnos {
+        display: flex;
+    }
+
+    .donde-encontrarnos div {
+        width: 50%;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* PRINCIPAL - PRODUCTO DEL MES */ 
+
+
+
+
+.views-row.views-row-1.views-row-odd.views-row-first.views-row-last.grid-24.lado-lado {
+    display: flex;
+}
+
+.views-field.views-field-field-link-producto-del-mes {
+    width: 50%;
+    display: flex ;
+    align-items: center;
+    background-color: #f3d5ce;
+    text-align: left;
+    padding: 40px;
+}
+
+    /* MITAD DE FOTO - PRODUCTO DEL MES */
+    .views-field.views-field-field-image-producto-del-mes.imagen-delmes {
+        width: 50%;
+    }
+
+    span.field-content {
+        width: 100%;
+    }
+
+    span.field-content > img {
+        width: 100%;
+    }
+
+@media only screen and (max-width: 1024px){
+    .views-field.views-field-field-link-producto-del-mes {
+        padding: 0px;
+        width: 100%;
+        display: flex;
+        align-items: center;
+        background-color: #f3d5ce;
+        text-align: center;
+    }
+}
+
+
+
+
+#block-social-media-links-social-media-links {
+    display: flex;
+    justify-content: center;
+}
+
+
+
+.parrafo-delmes {
+    background-color: #F3D5CE;
+    width: 50%;
+    padding: 35px;
+    display: flex;
+    align-items: center;
+}
+
+
+ /* SEPARAR BLOQUES UNO BAJO OTRO EN PAGINA PRINCIPAL */
+
+
+ #block-views-visitamarketplace-block {
+    margin-top: 20px;
+    text-align: center;
+}
+
+#block-views-sobre-nosotros-block {
+    text-align: center;
+}
+
+#block-views-producto-del-mes-block {
+    margin-top: 40px;
+    text-align: center;
+}
+
+#block-views-portafolio-block {
+    margin-top: 40px;
+    text-align: center;
 }

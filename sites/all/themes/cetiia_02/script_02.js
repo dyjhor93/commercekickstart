@@ -12,4 +12,8 @@ jQuery(document).ready(function($) {
         // }
         //console.log(classList[i]);//escribe las clases en el inspector de codigo
     //}
+
   });
+
+
+

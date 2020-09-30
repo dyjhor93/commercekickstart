@@ -1,4 +1,5 @@
 jQuery(document).ready(function($) {
+    
     // Codigo jquery y javascript va aquí
     //alert();
     //$("#main-menu").hide();//ocultar

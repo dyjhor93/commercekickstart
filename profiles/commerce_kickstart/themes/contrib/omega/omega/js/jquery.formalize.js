@@ -10,8 +10,8 @@ var FORMALIZE = (function($, window, document, undefined) {
   // Private constants.
   var PLACEHOLDER_SUPPORTED = 'placeholder' in document.createElement('input');
   var AUTOFOCUS_SUPPORTED = 'autofocus' in document.createElement('input');
-  var IE6 = !!($.browser.msie && parseInt($.browser.version, 10) === 6);
-  var IE7 = !!($.browser.msie && parseInt($.browser.version, 10) === 7);
+  var IE6 = !!(navigator.userAgent.indexOf("MSIE") > -1 && parseInt(navigator.appVersion, 10) === 6);
+  var IE7 = !!(navigator.userAgent.indexOf("MSIE") > -1 && parseInt(navigator.appVersion, 10) === 7);
 
   // Expose innards of FORMALIZE.
   return {
