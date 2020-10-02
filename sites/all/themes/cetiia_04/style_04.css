@@ -1,0 +1,40 @@
+/*
+#region-header-second, #region-menu{
+    padding-left: 0px;
+}
+
+
+
+*/
+
+#section-header{
+    background-color: rgba(0, 0, 0, 0.7);
+}
+
+img{
+    width: 100%;
+    height: auto;
+}
+
+.texto-baner{
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.texto-centrado{
+    text-align: center;
+}
+
+.texto-blanco{
+    color: white;
+} 
+
+.texto-negrilla{
+    font-weight: bold;
+}
+
+.boton{
+    
+}

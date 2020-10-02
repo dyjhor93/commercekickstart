@@ -8,7 +8,6 @@ body {
 }
 
 
-
 /* ESCONDER TITULO DE BIENVENIDA */
 
 h1#page-title {
@@ -20,14 +19,30 @@ h1#page-title {
 
 /* ESTILOS GLOBALES */
 
-.text-center{
-    text-align: center !important;
-}
+    /*Clase para centrar textos*/
+    .text-center{
+        text-align: center !important;
+    }
+
+    /* Clase para texto en negrilla */
+    .text-bold{
+        font-weight: bold;
+        font-size: 1.5em;
+    }
+
+    
+    /* Clase para centrar cualquier div */
+    .centrar-div {
+        display: flex;
+        justify-content: center;
+        text-align: center;
+        margin-bottom: 30px;
+    }
+
 
 .zone-preface {
     padding: 0px !important;
 }
-
 
 
 
@@ -91,11 +106,38 @@ h1#page-title {
     justify-content: center;
 }
 
+div#zone-branding {
+    width: 100%;
+}
+
 #region-user-first {
     display: flex;
     flex-direction: column;
     align-items: center;
     background-color: #ffffff !important;
+}
+
+
+nav.navigation.clearfix {
+    margin: 0;
+    padding: 0;
+    width: auto;
+    min-width: 0;
+}
+
+
+
+
+
+
+/* ESTO PARA NO QUITAR EL CARRITO DE COMPRAS EN LA NAV - DISEÑO RESPONSIVE AL DESPLEGAR  */ 
+
+#zone-header nav.navigation.clearfix {
+    margin: none !important;
+    padding: 0;
+    width: auto !important; 
+    min-width: 0 !important;
+    background-color: white;
 }
 
 
@@ -170,22 +212,20 @@ h1#page-title {
 
 
 
+   
 
 
-/* VISTA PORTAFOLIO */
+/* PRINCIPAL  VISITA MARKET PLACE */
 
-.field-label-hidden {
+#block-views-visitamarketplace-block {
     text-align: center;
 }
 
-.text-portafolio{
-    background-color: #fff;
-    margin: 0% 8% !important;
-    padding: 1%;
-}
+    /* TEXTO SOBRE IMAGEN  */
 
-
-
+    .detras-imagen{
+        position: relative;
+    }
 
 
 
@@ -208,21 +248,6 @@ h1#page-title {
     border-radius: 20px;
 }
 
-   
-
-
-/* PRINCIPAL  VISITA MARKET PLACE */
-
-#block-views-visitamarketplace-block {
-    text-align: center;
-}
-
-/* TEXTO SOBRE IMAGEN  */
-
-.detras-imagen{
-    position: relative;
-}
-
 
 
 
@@ -240,8 +265,6 @@ h1#page-title {
         font-size: 1em !important; 
     } 
 }
-
-
 
 
 @media only screen and (max-width: 1000px) {
@@ -293,8 +316,6 @@ h1#page-title {
 
 
 
-
-
 /* Zona preface*/
 .zone-preface{
     background-color:transparent !important;
@@ -303,18 +324,6 @@ h1#page-title {
 
 /*------------------------------------------------------------------------------------------------*/
 
-
-
-/* Clase para texto en negrilla */
-.text-bold{
-    font-weight: bold;
-    font-size: 1.5em;
-}
-
-/* iframe - mapa google*/
-iframe{
-    width: 100%;
-}
 
 
 
@@ -364,20 +373,6 @@ iframe{
         max-width: 100% !important;
         align-self: center;
     }
-}
-
-
-
-
-/*  SOBRE NOSOTROS */
-
-
-.views-field.views-field-field-link-sobre-nosotros {
-    width: 50%;
-}
-
-.views-field.views-field-field-link-sobre-nosotros > img {
-    width: 100% !important;
 }
 
 
@@ -441,7 +436,7 @@ iframe{
 }
 
 .view-header > P > a {
-    background-color: #ebbeb7;
+    background-color: #f3d5cf;
     cursor: pointer;
     border: 1px solid #000000;
     color: #000000;
@@ -487,24 +482,33 @@ table, th, td {
 /* quitar borde a descripcion y precio  */
  .views-field-title-field, .views-field.views-field-commerce-price {
      border: none !important;
- }
+}
 
-
-
-
-
-
-/* ESTO PARA NO QUITAR EL CARRITO DE COMPRAS EN LA NAV - DISEÑO RESPONSIVE AL DESPLEGAR  */ 
-
-#zone-header nav.navigation.clearfix {
-    margin: none !important;
-    padding: 0;
-    width: auto !important; 
-    min-width: 0 !important;
-    background-color: white;
+/********.view-carrusel ***************/
+.view-carrusel .view-come-sano .content.clearfix {
+    display: flex;
 }
 
 
+.view-carrusel li.odd.jcarousel-item.jcarousel-item-horizontal {
+    background: white;
+}
+
+
+.view-carrusel .views-field-title-field, .views-field.views-field-commerce-price {
+    background: white;
+    border: 1px solid #CCC;
+}
+
+.view-carrusel  .views-field.views-field-commerce-price {
+    border-top: 0;
+}
+
+.view-carrusel .views-field-title-field {
+    border-top: 0;
+    border-bottom: 0;
+
+}
 
 
 
@@ -516,15 +520,18 @@ table, th, td {
     background-color: #f3d5ce;
 }
 
+.form-text, .form-textarea{
+    background-color: #fff !important;
+    background: #fff !important;
+}
+
 .form-text {
     width: 100%;
     height: 45px;
-    background: #e0e0e0 !important;
-    border-bottom: 1px solid #000 !important;}
+    border-bottom: 1px solid #FAA356 !important;}
 
 textarea {
-    background: #e0e0e0 !important;
-    border-bottom: 1px solid #000 !important;
+    border-bottom: 1px solid #FAA356 !important;
 }
 
 
@@ -539,35 +546,50 @@ textarea {
 }
 
 
+.form-item.webform-component.webform-component-textfield.webform-component--nombres {
+    width: 50%;
+    border: none !important;
+}
+
+.form-item.webform-component.webform-component-email.webform-component--email {
+    width: 50%;
+    border: none !;
+}
 
 
+/*  TAMAÑOS PANTALLA COMPLETA */
 
-
-
-
-/* ESTE PARA CENTRAR CUALQUIER DIV */
-.centrar-div {
+/* PARA DONDE ENCONTRARNOS */
+ .donde-encontrarnos {
     display: flex;
+    padding: 40px;
+}
+
+.donde-encontrarnos div {
+    width: 50%;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
     justify-content: center;
-    text-align: center;
-    margin-bottom: 30px;
-}
-
-
-
-
-
-
-
-/* SE HACE PARA EL FOOTER 2  - DISEÑO RESPONSIVE*/
-@media only screen and (min-width: 800px) {
     
-    #zone-footer2 {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-    }
 }
+
+
+@media only screen and (max-width: 1024px) {
+
+    .donde-encontrarnos {
+        display: grid;
+        padding: 40px;
+    }
+
+    .donde-encontrarnos div {
+        width: 100%;
+        padding: 20px;
+        text-align: center;
+    }
+   
+}
+
 
 
 
@@ -603,7 +625,7 @@ input.webform-submit.button-primary.form-submit {
 /*para boton del footer*/
 
 input.webform-submit.button-primary.form-submit {
-    background: #000000;
+    background: #353535;
     color: #ffffff;
     border-radius: 0px;
 }
@@ -613,28 +635,25 @@ input.webform-submit.button-primary.form-submit {
 
 
 
-/* ALINEAS PORTAFOLIO Y CENTRARLO EN SU CONTENEDOR */
 
-#block-views-sobre-nosotros-block-1 .views-row {
-/* display: flex; */
-/* flex-grow: 3 !important; */
-/* flex-shrink: 8 !important; */
-margin-left: 10px !important;
-margin-right: 10px !important; 
+
+
+/* VISTA PORTAFOLIO */
+
+.field-label-hidden {
+    text-align: center;
+}
+
+.text-portafolio{
+    background-color: #fff;
+    margin: 0% 8% !important;
+    padding: 1%;
 }
 
 
 
-nav.navigation.clearfix {
-    margin: 0;
-    padding: 0;
-    width: auto;
-    min-width: 0;
-}
-
-
-
-
+    
+   
 /***main-menu***/
 
 
@@ -643,7 +662,7 @@ nav.navigation.clearfix {
 }
 
 #zone-header nav.navigation.clearfix {
-    margin: -56px auto 0 auto !important;
+    margin: -75px 210px 0 auto !important;
     padding: 0;
     width: auto !important;
     min-width: 0 !important;
@@ -705,71 +724,10 @@ li.views-row.views-row-1 {
 
 
 
-/********.view-carrusel ***************/
-.view-carrusel .view-come-sano .content.clearfix {
-    display: flex;
-}
-
-
-.view-carrusel li.odd.jcarousel-item.jcarousel-item-horizontal {
-    background: white;
-}
-
-
-.view-carrusel .views-field-title-field, .views-field.views-field-commerce-price {
-    background: white;
-    border: 1px solid #CCC;
-}
-
-.view-carrusel  .views-field.views-field-commerce-price {
-    border-top: 0;
-}
-
-.view-carrusel .views-field-title-field {
-    border-top: 0;
-    border-bottom: 0;
-
-}
-
-.form-text, .form-textarea{
-    background-color: #fff !important;
-    background: #fff !important;
-}
-
-
-
-
-
 
 
 
     
-
-/***id="block-views-sobre-nosotros-block-1 (PORTAFOLIO) **/
-
-div#region-postscript-third {
-    width: 100%;
-}
-
-#block-views-sobre-nosotros-block-1 .region-inner.region-menu-inner {display: flex;}
-
-
-#block-views-sobre-nosotros-block-1 .view-content {
-    width: 100%;
-    display: flex;
-    flex-flow: wrap;
-}
-
-#block-views-sobre-nosotros-block-1 .views-row {
-    /* display: flex; */
-    width: 100%;
-    flex: 4 2 0;
-    /* flex-grow: 3 !important; */
-    /* flex-shrink: 8 !important; */
-    margin: 0;
-    padding: 0;
-    min-width: 21% !important;
-}
 
 
 
@@ -779,6 +737,7 @@ div#region-postscript-third {
 
 
 /* ADMIN BARRA DESARROLLO DARK */
+
 body.toolbar #toolbar div.toolbar-menu, #toolbar{
     background-color: #000 !important;
     background: #000 !important;
@@ -796,146 +755,41 @@ body.toolbar #toolbar div.toolbar-menu, #toolbar{
 
 
 
-/* CODIGO RESPONSIVE - TODOS DISPOSITIVOS REDES SOCIALES */
-
-@media only screen and (max-width: 1024px) {
-
-    .redes-sociales {
-        margin: auto;
-        background-color:#000000;
-        display: flex;
-        flex-wrap: wrap;
-        justify-content: center;
-    }
-
-    .social-buttons__button {
-        margin: 10px 5px 0;
-    }
-    
-    .social-button {
-        position: relative;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        outline: none;
-        width: 70px;
-        height: 70px;
-        text-decoration: none;
-    }
-
-    .social-button__inner {
-        position: relative;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        width: calc(100% - 2px);
-        height: calc(100% - 2px);
-        border-radius: 100%;
-        background: #fff;
-        text-align: center;
-    }
-
-    .social-button i,
-    .social-button svg {
-        position: relative;
-        z-index: 1;
-        transition: 0.3s;
-    }
-
-    .social-button i {
-        font-size: 28px;
-    }
-
-    .social-button svg {
-        height: 40%;
-        width: 40%;
-    }
-
-    .social-button::after {
-        content: "";
-        position: absolute;
-        top: 0;
-        left: 50%;
-        display: block;
-        width: 0;
-        height: 0;
-        border-radius: 100%;
-        transition: 0.3s;
-    }
-
-    .social-button:focus, .social-button:hover {
-        color: #fff!important;
-    }
-    
-    .social-button:focus::after, .social-button:hover::after {
-        width: 100%;
-        height: 100%;
-        margin-left: -50%;
-    }
-    
-    .social-button--facebook {
-        color: #3b5998 !important;
-    }
-
-    .social-button--facebook::after {
-        background: #3b5998;
-    }
-
-    .social-button--twitter {
-        color: #1da1f2 !important;
-    }
-
-    .social-button--twitter::after {
-        background: #1da1f2;
-    }
-
-    .social-button--pinterest{
-    color: #bd081c !important;
-    }
-
-    .social-button--pinterest::after {
-        background: #bd081c;
-    }
-
-    .social-button--youtube {
-    color: #ff0000 !important;
-    }
-
-    .social-button--youtube::after {
-        background: #ff0000;
-    }
-
-    .social-button--instagram {
-    color: #c13584 !important;
-    }
-
-    .social-button--instagram::after {
-        background: #c13584;
-    }
-
-}
-
-
-
 
 /* CODIGO REDES SOCIALES PANTALLA COMPLETA */
 
+
+
+    /* CODIGO RESPONSIVE - TODOS DISPOSITIVOS REDES SOCIALES */
+
+    @media only screen and (max-width: 1024px) {
+
+        .redes-sociales {
+            margin: auto;
+            background-color:#000000;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+    
+
+    }
+
     /* Redes Sociales Flotante */
+
 
 @media only screen and (min-width: 1024px) {
 
     .redes-sociales {
+        padding: 10px;
         position:fixed;
-        width:60px;
-        bottom:30%;
+        width:35px;
+        bottom:20%;
         right:0px;
-        background-color: #000;
-        color:#FFF;
-        text-align: center;
-        font-size:30px;
+        background-color: rgba(0, 0, 0, 0.85);
+        font-size:40px;
         box-shadow: 0px 0px 0px 1px #999;
-        z-index:100;
-        border-radius: 3px;
     }
 
     .float:hover {
@@ -945,7 +799,7 @@ body.toolbar #toolbar div.toolbar-menu, #toolbar{
     }
 
     .icon-social{
-        background-size: 60px 45px;
+        background-size: 35px 35px;
         background-repeat: no-repeat;
     }
 
@@ -1003,31 +857,18 @@ body.toolbar #toolbar div.toolbar-menu, #toolbar{
 
 
 
-/*  FOOTER 
-
-#region-footer-second {
-    background: #ffffff;
-}
+/*  FOOTER */
 
 
-#zone-footer-wrapper {
-    background-color: #f6ebe2;
-}
-
-#block-menu-menu-social-connection .content ul.menu li a.pinterest {
-    background-image: url(https://www.flaticon.es/svg/static/icons/svg/733/733622.svg) !important;
+/* SE HACE PARA EL FOOTER 2  - DISEÑO RESPONSIVE*/
+@media only screen and (min-width: 800px) {
     
+    #zone-footer2 {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
 }
-
-#block-menu-menu-social-connection .content ul.menu li a.facebook {
-    background-image: url(https://www.flaticon.es/svg/static/icons/svg/20/20837.svg) !important;
-}
-
-#block-menu-menu-social-connection .content ul.menu li a.twitter {
-    background-image: url(https://www.flaticon.es/svg/static/icons/svg/733/733614.svg) !important;
-}
-
-*/
 
 
 
@@ -1063,18 +904,73 @@ body.toolbar #toolbar div.toolbar-menu, #toolbar{
 
 
 
-
-
-
-
-
-
 /*  PRINCIPAL SOBRE NOSOTROS  */
+
+
+
+    /*  SOBRE NOSOTROS */
+
+
+    .views-field.views-field-field-link-sobre-nosotros {
+        width: 50%;
+    }
+
+    .views-field.views-field-field-link-sobre-nosotros > img {
+        width: 100% !important;
+    }
+
+
+
+
+/***id="block-views-sobre-nosotros-block-1 (PORTAFOLIO) 
+
+div#region-postscript-third {
+    width: 100%;
+}
+
+#block-views-sobre-nosotros-block-1 .region-inner.region-menu-inner {display: flex;}
+
+
+#block-views-sobre-nosotros-block-1 .view-content {
+    width: 100%;
+    display: flex;
+    flex-flow: wrap;
+}
+
+#block-views-sobre-nosotr
+    width: 100%;
+    flex: 4 2 0;
+    /* flex-grow: 3 !important; 
+    /* flex-shrink: 8 !important; 
+    margin: 0;
+    padding: 0;
+    min-width: 21% !important;
+}
+*/
+
 
 
 
 .views-field.views-field-field-image-sobre-nosotros {
     width: 50%;
+}
+
+.views-field.views-field-field-image-sobre-nosotros > div {
+    width: 100%;
+    display: flex;
+    align-items: center;
+}
+
+.views-field.views-field-field-link-sobre-nosotros > div {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 40px;
+
+}
+
+.views-field.views-field-field-image-sobre-nosotros > div > img {
+    width: 100%;
 }
 
 
@@ -1083,6 +979,10 @@ body.toolbar #toolbar div.toolbar-menu, #toolbar{
     display: flex;
 }
 
+
+.views-row.views-row-1.views-row-odd.views-row-first.views-row-last {
+    margin: 0px;
+}
 
 .views-field.views-field-field-image-sobre-nosotros > img {
     width: 100%;
@@ -1113,6 +1013,7 @@ body.toolbar #toolbar div.toolbar-menu, #toolbar{
     /* CENTRAR CONTENEDOR TEXT SOBRE NOSOTROS */
     .views-field.views-field-field-link-sobre-nosotros {
         width: 100% !important;
+        text-align: center;
     }
 
     /* CENTRAR CONTENEDOR TEXT COME SANO */
@@ -1125,22 +1026,6 @@ body.toolbar #toolbar div.toolbar-menu, #toolbar{
 }
 
 
-/*  TAMAÑOS PANTALLA COMPLETA */
-
-@media only screen and (min-width: 1024px) {
-   
-    /* PARA CONTACTEMOS */
-    .donde-encontrarnos {
-        display: flex;
-    }
-
-    .donde-encontrarnos div {
-        width: 50%;
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-    }
-}
 
 
 
@@ -1163,6 +1048,7 @@ body.toolbar #toolbar div.toolbar-menu, #toolbar{
 
 .views-row.views-row-1.views-row-odd.views-row-first.views-row-last.grid-24.lado-lado {
     display: flex;
+    margin: 0px;
 }
 
 .views-field.views-field-field-link-producto-del-mes {
@@ -1238,3 +1124,29 @@ body.toolbar #toolbar div.toolbar-menu, #toolbar{
     margin-top: 40px;
     text-align: center;
 }
+
+
+
+
+iframe {
+    width: 100%;
+}
+
+
+/* BOTON PORTAFOLIO TEXTO **/
+.views-field.views-field-field-link-portafolio-snack > div > a {
+    background: #f3d5cf;
+}
+
+.views-field.views-field-field-parrafo1portafolio-snack {
+    width: 80%;
+    margin: auto;
+}
+
+
+
+
+
+
+/* sobre nosotros */
+
